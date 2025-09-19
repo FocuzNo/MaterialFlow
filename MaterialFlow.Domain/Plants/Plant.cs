@@ -8,10 +8,22 @@ public sealed class Plant : Entity
 
     private Plant() { }
 
-    public Plant(Guid identifier, string plantCode, string name)
+    public static Plant Create(
+        Guid id,
+        string plantCode,
+        string name)
+        => new()
+        {
+            Id = id,
+            PlantCode = plantCode,
+            Name = name
+        };
+
+    public void Update(
+        string plantCode,
+        string name)
     {
-        Identifier = identifier;
-        PlantCode = string.IsNullOrWhiteSpace(plantCode) ? throw new ArgumentException("PlantCode cannot be empty.", nameof(plantCode)) : plantCode;
-        Name = string.IsNullOrWhiteSpace(name) ? throw new ArgumentException("Name cannot be empty.", nameof(name)) : name;
+        PlantCode = plantCode;
+        Name = name;
     }
 }
