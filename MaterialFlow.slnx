@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="MaterialFlow.Application/MaterialFlow.Application.csproj" />
     <Project Path="MaterialFlow.Domain/MaterialFlow.Domain.csproj" />

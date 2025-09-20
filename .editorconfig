@@ -1,0 +1,8 @@
+﻿[*.cs]
+
+# CS8618: A field that does not allow a NULL value must contain a value other than NULL when exiting the constructor. Consider adding a "required" modifier or declaring a value that allows NULL.
+dotnet_diagnostic.CS8618.severity = none
+
+[*.cs]
+# IDE0161: Convert to file-scoped namespace
+csharp_style_namespace_declarations = file_scoped:warning

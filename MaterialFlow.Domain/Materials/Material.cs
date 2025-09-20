@@ -1,5 +1,6 @@
 ﻿using MaterialFlow.Domain.Materials.Enums;
 using MaterialFlow.Domain.Materials.ValueObjects;
+using MaterialFlow.Domain.Shared.ValueObjects;
 
 namespace MaterialFlow.Domain.Materials;
 
