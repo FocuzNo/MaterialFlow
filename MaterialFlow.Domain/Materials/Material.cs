@@ -1,5 +1,6 @@
 ﻿using MaterialFlow.Domain.Materials.Enums;
 using MaterialFlow.Domain.Materials.ValueObjects;
+using MaterialFlow.Domain.Shared.ValueObjects;
 
 namespace MaterialFlow.Domain.Materials;
 
@@ -23,7 +24,7 @@ public sealed class Material : Entity
 
     public decimal SafetyStockQuantity { get; private set; }
 
-    public Material(
+    public static Material Create(
         Guid id,
         MaterialNumber materialNumber,
         string description,
@@ -33,8 +34,29 @@ public sealed class Material : Entity
         ProcurementType procurementType,
         int plannedDeliveryTimeInDays,
         decimal safetyStockQuantity)
+        => new()
+        {
+            Id = id,
+            MaterialNumber = materialNumber,
+            Description = description,
+            BaseUnitOfMeasure = baseUnitOfMeasure,
+            MaterialRequirementsPlanningType = materialRequirementsPlanningType,
+            LotSizePolicy = lotSizePolicy,
+            ProcurementType = procurementType,
+            PlannedDeliveryTimeInDays = plannedDeliveryTimeInDays,
+            SafetyStockQuantity = safetyStockQuantity
+        };
+
+    public void Update(
+        MaterialNumber materialNumber,
+        string description,
+        UnitOfMeasure baseUnitOfMeasure,
+        MaterialRequirementsPlanningType materialRequirementsPlanningType,
+        LotSizePolicy lotSizePolicy,
+        ProcurementType procurementType,
+        int plannedDeliveryTimeInDays,
+        decimal safetyStockQuantity)
     {
-        Id = id;
         MaterialNumber = materialNumber;
         Description = description;
         BaseUnitOfMeasure = baseUnitOfMeasure;

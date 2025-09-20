@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MaterialFlow.Domain.Materials.ValueObjects;
+﻿namespace MaterialFlow.Domain.Shared.ValueObjects;
 
 public sealed record DateRange(
     DateOnly StartDate,
