@@ -1,4 +1,6 @@
-﻿namespace MaterialFlow.Domain.ForecastPlans;
+﻿using MaterialFlow.Domain.Shared.ValueObjects;
+
+namespace MaterialFlow.Domain.ForecastPlans;
 
 public sealed class ForecastPlanItem : Entity
 {
@@ -9,7 +11,7 @@ public sealed class ForecastPlanItem : Entity
 
     public DateOnly PeriodStartDate { get; private set; }
 
-    public decimal Quantity { get; private set; }
+    public Quantity Quantity { get; private set; }
 
     public string? ConsumptionIndicator { get; private set; }
 
@@ -17,7 +19,7 @@ public sealed class ForecastPlanItem : Entity
         Guid id,
         Guid forecastPlanId,
         DateOnly periodStartDate,
-        decimal quantity,
+        Quantity quantity,
         string? consumptionIndicator)
         => new()
         {
@@ -30,7 +32,7 @@ public sealed class ForecastPlanItem : Entity
 
     public void Update(
         DateOnly periodStartDate,
-        decimal quantity,
+        Quantity quantity,
         string? consumptionIndicator)
     {
         PeriodStartDate = periodStartDate;

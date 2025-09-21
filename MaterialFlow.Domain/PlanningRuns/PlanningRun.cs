@@ -1,4 +1,5 @@
 ﻿using MaterialFlow.Domain.PlanningAreas;
+using MaterialFlow.Domain.Shared.ValueObjects;
 using MaterialFlow.Domain.Sites;
 
 namespace MaterialFlow.Domain.PlanningRuns;
@@ -19,7 +20,7 @@ public sealed class PlanningRun : Entity
 
     public string StartedByUser { get; private set; }
 
-    public string Status { get; private set; }
+    public OrderStatus OrderStatus { get; private set; }
 
     private readonly List<PlanningRunLine> _lines = new();
 
@@ -32,7 +33,7 @@ public sealed class PlanningRun : Entity
         Guid? planningAreaId,
         int planningHorizonInDays,
         string startedByUser,
-        string status = "Created")
+        OrderStatus orderStatus)
         => new()
         {
             Id = id,
@@ -41,15 +42,15 @@ public sealed class PlanningRun : Entity
             PlanningAreaId = planningAreaId,
             PlanningHorizonInDays = planningHorizonInDays,
             StartedByUser = startedByUser,
-            Status = status
+            OrderStatus = orderStatus
         };
 
     public void Update(
         int planningHorizonInDays,
-        string status)
+        OrderStatus orderStatus)
     {
         PlanningHorizonInDays = planningHorizonInDays;
-        Status = status;
+        OrderStatus = orderStatus;
     }
 
     public void AddLine(PlanningRunLine line) =>

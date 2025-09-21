@@ -1,20 +1,20 @@
-﻿
-namespace MaterialFlow.Domain.Abstractions;
+﻿namespace MaterialFlow.Domain.Abstractions;
 
 public abstract class SmartEnumeration<TEnum>(
     string name,
     int value) where TEnum : SmartEnumeration<TEnum>
 {
     public string Name { get; } = name;
-
     public int Value { get; } = value;
 
     private static IReadOnlyCollection<TEnum>? _all;
 
     public static IReadOnlyCollection<TEnum> GetAll() =>
-        _all ??= [.. typeof(TEnum)
+        _all ??= typeof(TEnum)
             .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
-            .Select(f => (TEnum)f.GetValue(null)!)];
+            .Select(f => (TEnum)f.GetValue(null)!)
+            .ToList()
+            .AsReadOnly();
 
     public static TEnum FromName(string name) =>
         GetAll().Single(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
@@ -39,4 +39,6 @@ public abstract class SmartEnumeration<TEnum>(
 
         return result is not null;
     }
+
+    public override string ToString() => Name;
 }

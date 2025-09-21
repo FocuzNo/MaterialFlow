@@ -1,4 +1,5 @@
 ﻿using MaterialFlow.Domain.Materials;
+using MaterialFlow.Domain.SalesOrderDemands.ValueObjects;
 using MaterialFlow.Domain.Shared.ValueObjects;
 using MaterialFlow.Domain.Sites;
 
@@ -16,26 +17,20 @@ public sealed class SalesOrderDemand : Entity
 
     public DateOnly RequirementDate { get; private set; }
 
-    public decimal Quantity { get; private set; }
+    public Quantity Quantity { get; private set; }
 
     public UnitOfMeasure UnitOfMeasure { get; private set; }
 
-    public string SourceDocumentType { get; private set; }
-
-    public string SourceDocumentNumber { get; private set; }
-
-    public string SourceDocumentItemNumber { get; private set; }
+    public SourceDocument SourceDocument { get; private set; }
 
     public static SalesOrderDemand Create(
         Guid id,
         Guid materialId,
         Guid siteId,
         DateOnly requirementDate,
-        decimal quantity,
+        Quantity quantity,
         UnitOfMeasure unitOfMeasure,
-        string sourceDocumentType,
-        string sourceDocumentNumber,
-        string sourceDocumentItemNumber)
+        SourceDocument sourceDocument)
         => new()
         {
             Id = id,
@@ -44,14 +39,12 @@ public sealed class SalesOrderDemand : Entity
             RequirementDate = requirementDate,
             Quantity = quantity,
             UnitOfMeasure = unitOfMeasure,
-            SourceDocumentType = sourceDocumentType,
-            SourceDocumentNumber = sourceDocumentNumber,
-            SourceDocumentItemNumber = sourceDocumentItemNumber
+            SourceDocument = sourceDocument
         };
 
     public void Update(
         DateOnly requirementDate,
-        decimal quantity,
+        Quantity quantity,
         UnitOfMeasure unitOfMeasure)
     {
         RequirementDate = requirementDate;

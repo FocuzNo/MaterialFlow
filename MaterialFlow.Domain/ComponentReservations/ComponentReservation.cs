@@ -19,11 +19,11 @@ public sealed class ComponentReservation : Entity
 
     public DateOnly RequirementDate { get; private set; }
 
-    public decimal Quantity { get; private set; }
+    public Quantity Quantity { get; private set; }
 
     public UnitOfMeasure UnitOfMeasure { get; private set; }
 
-    public string Status { get; private set; }
+    public ReservationStatus Status { get; private set; }
 
     public static ComponentReservation Create(
         Guid id,
@@ -32,9 +32,9 @@ public sealed class ComponentReservation : Entity
         Guid materialId,
         Guid siteId,
         DateOnly requirementDate,
-        decimal quantity,
+        Quantity quantity,
         UnitOfMeasure unitOfMeasure,
-        string status = "Open")
+        ReservationStatus? status = null)
         => new()
         {
             Id = id,
@@ -45,14 +45,14 @@ public sealed class ComponentReservation : Entity
             RequirementDate = requirementDate,
             Quantity = quantity,
             UnitOfMeasure = unitOfMeasure,
-            Status = status
+            Status = status ?? ReservationStatus.Reserved
         };
 
     public void Update(
         DateOnly requirementDate,
-        decimal quantity,
+        Quantity quantity,
         UnitOfMeasure unitOfMeasure,
-        string status)
+        ReservationStatus status)
     {
         RequirementDate = requirementDate;
         Quantity = quantity;
