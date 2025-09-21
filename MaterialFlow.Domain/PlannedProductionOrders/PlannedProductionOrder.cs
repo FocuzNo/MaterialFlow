@@ -26,18 +26,18 @@ public sealed class PlannedProductionOrder : Entity
 
     public DateOnly EndDate { get; private set; }
 
-    public string Status { get; private set; }
+    public OrderStatus OrderStatus { get; private set; }
 
     public static PlannedProductionOrder Create(
         Guid id,
         Guid materialId,
         Guid siteId,
+        Guid? planningRunId,
         decimal quantity,
         UnitOfMeasure unitOfMeasure,
         DateOnly startDate,
         DateOnly endDate,
-        string status = "Created",
-        Guid? planningRunId = null)
+        OrderStatus orderStatus)
         => new()
         {
             Id = id,
@@ -48,18 +48,18 @@ public sealed class PlannedProductionOrder : Entity
             UnitOfMeasure = unitOfMeasure,
             StartDate = startDate,
             EndDate = endDate,
-            Status = status
+            OrderStatus = orderStatus
         };
 
     public void Update(
         decimal quantity,
         DateOnly startDate,
         DateOnly endDate,
-        string status)
+        OrderStatus orderStatus)
     {
         Quantity = quantity;
         StartDate = startDate;
         EndDate = endDate;
-        Status = status;
+        OrderStatus = orderStatus;
     }
 }

@@ -22,7 +22,7 @@ public sealed class Material : Entity
 
     public int PlannedDeliveryTimeInDays { get; private set; }
 
-    public decimal SafetyStockQuantity { get; private set; }
+    public Quantity SafetyStockQuantity { get; private set; }
 
     public static Material Create(
         Guid id,
@@ -33,7 +33,7 @@ public sealed class Material : Entity
         LotSizePolicy lotSizePolicy,
         ProcurementType procurementType,
         int plannedDeliveryTimeInDays,
-        decimal safetyStockQuantity)
+        Quantity safetyStockQuantity)
         => new()
         {
             Id = id,
@@ -55,7 +55,7 @@ public sealed class Material : Entity
         LotSizePolicy lotSizePolicy,
         ProcurementType procurementType,
         int plannedDeliveryTimeInDays,
-        decimal safetyStockQuantity)
+        Quantity safetyStockQuantity)
     {
         MaterialNumber = materialNumber;
         Description = description;

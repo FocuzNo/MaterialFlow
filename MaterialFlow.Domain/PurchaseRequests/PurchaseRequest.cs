@@ -18,7 +18,7 @@ public sealed class PurchaseRequest : Entity
     public Guid? PlanningRunId { get; private set; }
     public PlanningRun? PlanningRun { get; private set; }
 
-    public decimal Quantity { get; private set; }
+    public Quantity Quantity { get; private set; }
 
     public UnitOfMeasure UnitOfMeasure { get; private set; }
 
@@ -26,18 +26,18 @@ public sealed class PurchaseRequest : Entity
 
     public string? PurchasingGroup { get; private set; }
 
-    public string Status { get; private set; }
+    public OrderStatus OrderStatus { get; private set; }
 
     public static PurchaseRequest Create(
         Guid id,
         Guid materialId,
         Guid siteId,
         Guid? planningRunId,
-        decimal quantity,
+        Quantity quantity,
         UnitOfMeasure unitOfMeasure,
         DateOnly requestedDeliveryDate,
         string? purchasingGroup,
-        string status = "Created")
+        OrderStatus orderStatus)
         => new()
         {
             Id = id,
@@ -48,18 +48,18 @@ public sealed class PurchaseRequest : Entity
             UnitOfMeasure = unitOfMeasure,
             RequestedDeliveryDate = requestedDeliveryDate,
             PurchasingGroup = purchasingGroup,
-            Status = status
+            OrderStatus = orderStatus
         };
 
     public void Update(
-        decimal quantity,
+        Quantity quantity,
         DateOnly requestedDeliveryDate,
         string? purchasingGroup,
-        string status)
+        OrderStatus orderStatus)
     {
         Quantity = quantity;
         RequestedDeliveryDate = requestedDeliveryDate;
         PurchasingGroup = purchasingGroup;
-        Status = status;
+        OrderStatus = orderStatus;
     }
 }

@@ -15,7 +15,7 @@ public sealed class ProductComponent : Entity
 
     public UnitOfMeasure UnitOfMeasure { get; private set; }
 
-    public decimal QuantityPer { get; private set; }
+    public Quantity QuantityPer { get; private set; }
 
     public decimal? ScrapPercentage { get; private set; }
 
@@ -24,7 +24,7 @@ public sealed class ProductComponent : Entity
         Guid productStructureId,
         Guid materialId,
         UnitOfMeasure unitOfMeasure,
-        decimal quantityPer,
+        Quantity quantityPer,
         decimal? scrapPercentage)
         => new()
         {
@@ -38,7 +38,7 @@ public sealed class ProductComponent : Entity
 
     public void Update(
         UnitOfMeasure unitOfMeasure,
-        decimal quantityPer,
+        Quantity quantityPer,
         decimal? scrapPercentage)
     {
         UnitOfMeasure = unitOfMeasure;

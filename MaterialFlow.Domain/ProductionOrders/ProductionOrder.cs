@@ -18,7 +18,7 @@ public sealed class ProductionOrder : Entity
     public Guid? ConvertedFromPlannedOrderId { get; private set; }
     public PlannedProductionOrder? ConvertedFromPlannedOrder { get; private set; }
 
-    public decimal QuantityToProduce { get; private set; }
+    public Quantity QuantityToProduce { get; private set; }
 
     public UnitOfMeasure UnitOfMeasure { get; private set; }
 
@@ -26,18 +26,18 @@ public sealed class ProductionOrder : Entity
 
     public DateOnly ScheduledEndDate { get; private set; }
 
-    public string Status { get; private set; }
+    public OrderStatus OrderStatus { get; private set; }
 
     public static ProductionOrder Create(
         Guid id,
         Guid materialId,
         Guid siteId,
         Guid? convertedFromPlannedOrderId,
-        decimal quantityToProduce,
+        Quantity quantityToProduce,
         UnitOfMeasure unitOfMeasure,
         DateOnly scheduledStartDate,
         DateOnly scheduledEndDate,
-        string status = "Created")
+        OrderStatus orderStatus)
         => new()
         {
             Id = id,
@@ -48,18 +48,18 @@ public sealed class ProductionOrder : Entity
             UnitOfMeasure = unitOfMeasure,
             ScheduledStartDate = scheduledStartDate,
             ScheduledEndDate = scheduledEndDate,
-            Status = status
+            OrderStatus = orderStatus
         };
 
     public void Update(
-        decimal quantityToProduce,
+        Quantity quantityToProduce,
         DateOnly scheduledStartDate,
         DateOnly scheduledEndDate,
-        string status)
+        OrderStatus orderStatus)
     {
         QuantityToProduce = quantityToProduce;
         ScheduledStartDate = scheduledStartDate;
         ScheduledEndDate = scheduledEndDate;
-        Status = status;
+        OrderStatus = orderStatus;
     }
 }

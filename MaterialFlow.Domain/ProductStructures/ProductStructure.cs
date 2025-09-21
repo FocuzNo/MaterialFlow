@@ -23,7 +23,7 @@ public sealed class ProductStructure : Entity
 
     public DateOnly? ValidToDate { get; private set; }
 
-    public string Status { get; private set; }
+    public OrderStatus OrderStatus { get; private set; }
 
     private readonly List<ProductComponent> _components = [];
 
@@ -38,7 +38,7 @@ public sealed class ProductStructure : Entity
         string? alternativeNumber,
         DateOnly validFromDate,
         DateOnly? validToDate,
-        string status)
+        OrderStatus orderStatus)
         => new()
         {
             Id = id,
@@ -48,13 +48,13 @@ public sealed class ProductStructure : Entity
             AlternativeNumber = alternativeNumber,
             ValidFromDate = validFromDate,
             ValidToDate = validToDate,
-            Status = status
+            OrderStatus = orderStatus
         };
 
     public ProductComponent AddComponent(
         Guid componentMaterialId,
         UnitOfMeasure unitOfMeasure,
-        decimal quantityPer,
+        Quantity quantityPer,
         decimal? scrapPercentage)
     {
         var component = ProductComponent.Create(
@@ -86,7 +86,7 @@ public sealed class ProductStructure : Entity
         string? alternativeNumber,
         DateOnly validFromDate,
         DateOnly? validToDate,
-        string status)
+        OrderStatus orderStatus)
     {
         MaterialId = materialId;
         SiteId = siteId;
@@ -94,6 +94,6 @@ public sealed class ProductStructure : Entity
         AlternativeNumber = alternativeNumber;
         ValidFromDate = validFromDate;
         ValidToDate = validToDate;
-        Status = status;
+        OrderStatus = orderStatus;
     }
 }

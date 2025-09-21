@@ -1,5 +1,5 @@
 ﻿using MaterialFlow.Domain.Materials;
-using MaterialFlow.Domain.Materials.Enums;
+using MaterialFlow.Domain.Shared.ValueObjects;
 using MaterialFlow.Domain.Sites;
 
 namespace MaterialFlow.Domain.PlanningRuns;
@@ -19,13 +19,13 @@ public sealed class PlanningRunLine : Entity
 
     public DateOnly RequirementDate { get; private set; }
 
-    public decimal RequirementQuantity { get; private set; }
+    public Quantity RequirementQuantity { get; private set; }
 
-    public decimal AvailableQuantity { get; private set; }
+    public Quantity AvailableQuantity { get; private set; }
 
-    public decimal ShortageQuantity { get; private set; }
+    public Quantity ShortageQuantity { get; private set; }
 
-    public RecommendedActionCode? RecommendedActionCode { get; private set; }
+    public string RecommendedAction { get; private set; }
 
     public DateOnly? RescheduleDate { get; private set; }
 
@@ -35,11 +35,11 @@ public sealed class PlanningRunLine : Entity
         Guid materialId,
         Guid siteId,
         DateOnly requirementDate,
-        decimal requirementQuantity,
-        decimal availableQuantity,
-        decimal shortageQuantity,
-        RecommendedActionCode? recommendedActionCode = null,
-        DateOnly? rescheduleDate = null)
+        Quantity requirementQuantity,
+        Quantity availableQuantity,
+        Quantity shortageQuantity,
+        string recommendedAction,
+        DateOnly rescheduleDate)
         => new()
         {
             Id = id,
@@ -50,21 +50,22 @@ public sealed class PlanningRunLine : Entity
             RequirementQuantity = requirementQuantity,
             AvailableQuantity = availableQuantity,
             ShortageQuantity = shortageQuantity,
-            RecommendedActionCode = recommendedActionCode,
+            RecommendedAction = recommendedAction,
             RescheduleDate = rescheduleDate
         };
 
     public void Update(
-        decimal requirementQuantity,
-        decimal availableQuantity,
-        decimal shortageQuantity,
-        RecommendedActionCode? recommendedActionCode,
-        DateOnly? rescheduleDate)
+        DateOnly requirementDate,
+        Quantity requirementQuantity,
+        Quantity availableQuantity,
+        Quantity shortageQuantity,
+        string recommendedAction,
+        DateOnly rescheduleDate)
     {
         RequirementQuantity = requirementQuantity;
         AvailableQuantity = availableQuantity;
         ShortageQuantity = shortageQuantity;
-        RecommendedActionCode = recommendedActionCode;
+        RecommendedAction = recommendedAction;
         RescheduleDate = rescheduleDate;
     }
 }
