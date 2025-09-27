@@ -9,6 +9,6 @@ public record Error(
         string.Empty);
 
     public static readonly Error NullValue = new(
-        "Error.NullValue",
+        $"{nameof(Error)}.{NullValue}",
         "Null value was provided");
 }
