@@ -3,11 +3,14 @@ using MaterialFlow.Domain.Materials.Enums;
 using MaterialFlow.Domain.PlanningAreas;
 using MaterialFlow.Domain.Shared.ValueObjects;
 using MaterialFlow.Domain.Sites;
+using MaterialFlow.Domain.ForecastPlans.Events;
 
 namespace MaterialFlow.Domain.ForecastPlans;
 
 public sealed class ForecastPlan : Entity
 {
+    private readonly List<ForecastPlanItem> _items = [];
+
     private ForecastPlan() { }
 
     public Guid MaterialId { get; private set; }
@@ -29,10 +32,7 @@ public sealed class ForecastPlan : Entity
 
     public DateRange DateRange { get; private set; }
 
-    private readonly List<ForecastPlanItem> _items = [];
-
-    public IReadOnlyCollection<ForecastPlanItem> Items =>
-        _items.AsReadOnly();
+    public IReadOnlyCollection<ForecastPlanItem> Items => _items.AsReadOnly();
 
     public static ForecastPlan Create(
         Guid id,
@@ -44,7 +44,8 @@ public sealed class ForecastPlan : Entity
         UnitOfMeasure unitOfMeasure,
         PeriodGranularity periodGranularity,
         DateRange dateRange)
-        => new()
+    {
+        var forecastPlan = new ForecastPlan
         {
             Id = id,
             MaterialId = materialId,
@@ -57,9 +58,14 @@ public sealed class ForecastPlan : Entity
             DateRange = dateRange
         };
 
+        forecastPlan.RaiseDomainEvent(new ForecastPlanCreatedDomainEvent(forecastPlan.Id));
+
+        return forecastPlan;
+    }
+
     public ForecastPlanItem AddItem(
         DateOnly periodStartDate,
-        decimal quantity)
+        Quantity quantity)
     {
         var item = ForecastPlanItem.Create(
             Guid.NewGuid(),
@@ -85,5 +91,12 @@ public sealed class ForecastPlan : Entity
         UnitOfMeasure = unitOfMeasure;
         PeriodGranularity = periodGranularity;
         DateRange = dateRange;
+
+        RaiseDomainEvent(new ForecastPlanUpdatedDomainEvent(Id));
+    }
+
+    public void Delete()
+    {
+        RaiseDomainEvent(new ForecastPlanDeletedDomainEvent(Id));
     }
 }
