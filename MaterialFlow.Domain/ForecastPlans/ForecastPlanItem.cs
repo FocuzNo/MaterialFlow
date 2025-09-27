@@ -1,4 +1,5 @@
 ﻿using MaterialFlow.Domain.Shared.ValueObjects;
+using MaterialFlow.Domain.ForecastPlans.Events;
 
 namespace MaterialFlow.Domain.ForecastPlans;
 
@@ -21,7 +22,8 @@ public sealed class ForecastPlanItem : Entity
         DateOnly periodStartDate,
         Quantity quantity,
         string? consumptionIndicator)
-        => new()
+    {
+        var item = new ForecastPlanItem
         {
             Id = id,
             ForecastPlanId = forecastPlanId,
@@ -29,6 +31,13 @@ public sealed class ForecastPlanItem : Entity
             Quantity = quantity,
             ConsumptionIndicator = consumptionIndicator
         };
+
+        item.RaiseDomainEvent(new ForecastPlanItemCreatedDomainEvent(
+            item.Id,
+            forecastPlanId));
+
+        return item;
+    }
 
     public void Update(
         DateOnly periodStartDate,
@@ -38,5 +47,16 @@ public sealed class ForecastPlanItem : Entity
         PeriodStartDate = periodStartDate;
         Quantity = quantity;
         ConsumptionIndicator = consumptionIndicator;
+
+        RaiseDomainEvent(new ForecastPlanItemUpdatedDomainEvent(
+            Id,
+            ForecastPlanId));
+    }
+
+    public void Delete()
+    {
+        RaiseDomainEvent(new ForecastPlanItemDeletedDomainEvent(
+            Id,
+            ForecastPlanId));
     }
 }

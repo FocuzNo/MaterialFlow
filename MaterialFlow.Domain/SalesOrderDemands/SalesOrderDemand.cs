@@ -2,6 +2,7 @@
 using MaterialFlow.Domain.SalesOrderDemands.ValueObjects;
 using MaterialFlow.Domain.Shared.ValueObjects;
 using MaterialFlow.Domain.Sites;
+using MaterialFlow.Domain.SalesOrderDemands.Events;
 
 namespace MaterialFlow.Domain.SalesOrderDemands;
 
@@ -31,7 +32,8 @@ public sealed class SalesOrderDemand : Entity
         Quantity quantity,
         UnitOfMeasure unitOfMeasure,
         SourceDocument sourceDocument)
-        => new()
+    {
+        var salesOrderDemand = new SalesOrderDemand
         {
             Id = id,
             MaterialId = materialId,
@@ -42,6 +44,11 @@ public sealed class SalesOrderDemand : Entity
             SourceDocument = sourceDocument
         };
 
+        salesOrderDemand.RaiseDomainEvent(new SalesOrderDemandCreatedDomainEvent(salesOrderDemand.Id));
+
+        return salesOrderDemand;
+    }
+
     public void Update(
         DateOnly requirementDate,
         Quantity quantity,
@@ -50,5 +57,7 @@ public sealed class SalesOrderDemand : Entity
         RequirementDate = requirementDate;
         Quantity = quantity;
         UnitOfMeasure = unitOfMeasure;
+
+        RaiseDomainEvent(new SalesOrderDemandUpdatedDomainEvent(Id));
     }
 }

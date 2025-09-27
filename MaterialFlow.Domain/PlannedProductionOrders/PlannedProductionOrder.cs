@@ -2,6 +2,7 @@
 using MaterialFlow.Domain.PlanningRuns;
 using MaterialFlow.Domain.Shared.ValueObjects;
 using MaterialFlow.Domain.Sites;
+using MaterialFlow.Domain.PlannedProductionOrders.Events;
 
 namespace MaterialFlow.Domain.PlannedProductionOrders;
 
@@ -38,7 +39,8 @@ public sealed class PlannedProductionOrder : Entity
         DateOnly startDate,
         DateOnly endDate,
         OrderStatus orderStatus)
-        => new()
+    {
+        var order = new PlannedProductionOrder
         {
             Id = id,
             MaterialId = materialId,
@@ -51,6 +53,11 @@ public sealed class PlannedProductionOrder : Entity
             OrderStatus = orderStatus
         };
 
+        order.RaiseDomainEvent(new PlannedProductionOrderCreatedDomainEvent(order.Id));
+
+        return order;
+    }
+
     public void Update(
         decimal quantity,
         DateOnly startDate,
@@ -61,5 +68,19 @@ public sealed class PlannedProductionOrder : Entity
         StartDate = startDate;
         EndDate = endDate;
         OrderStatus = orderStatus;
+
+        RaiseDomainEvent(new PlannedProductionOrderApprovedDomainEvent(Id));
+    }
+
+    public void Cancel()
+    {
+        if (OrderStatus == OrderStatus.Cancelled)
+        {
+            return;
+        }
+
+        OrderStatus = OrderStatus.Cancelled;
+
+        RaiseDomainEvent(new PlannedProductionOrderCancelledDomainEvent(Id));
     }
 }

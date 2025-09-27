@@ -1,4 +1,5 @@
 ﻿using MaterialFlow.Domain.Materials.Enums;
+using MaterialFlow.Domain.Materials.Events;
 using MaterialFlow.Domain.Materials.ValueObjects;
 using MaterialFlow.Domain.Shared.ValueObjects;
 
@@ -24,6 +25,8 @@ public sealed class Material : Entity
 
     public Quantity SafetyStockQuantity { get; private set; }
 
+    public bool IsActive { get; private set; } = true;
+
     public static Material Create(
         Guid id,
         MaterialNumber materialNumber,
@@ -34,7 +37,8 @@ public sealed class Material : Entity
         ProcurementType procurementType,
         int plannedDeliveryTimeInDays,
         Quantity safetyStockQuantity)
-        => new()
+    {
+        var material = new Material
         {
             Id = id,
             MaterialNumber = materialNumber,
@@ -44,8 +48,14 @@ public sealed class Material : Entity
             LotSizePolicy = lotSizePolicy,
             ProcurementType = procurementType,
             PlannedDeliveryTimeInDays = plannedDeliveryTimeInDays,
-            SafetyStockQuantity = safetyStockQuantity
+            SafetyStockQuantity = safetyStockQuantity,
+            IsActive = true
         };
+
+        material.RaiseDomainEvent(new MaterialCreatedDomainEvent(material.Id));
+
+        return material;
+    }
 
     public void Update(
         MaterialNumber materialNumber,
@@ -65,5 +75,19 @@ public sealed class Material : Entity
         ProcurementType = procurementType;
         PlannedDeliveryTimeInDays = plannedDeliveryTimeInDays;
         SafetyStockQuantity = safetyStockQuantity;
+
+        RaiseDomainEvent(new MaterialUpdatedDomainEvent(Id));
+    }
+
+    public void Deactivate()
+    {
+        if (!IsActive)
+        {
+            return;
+        }
+
+        IsActive = false;
+
+        RaiseDomainEvent(new MaterialDeactivatedDomainEvent(Id));
     }
 }

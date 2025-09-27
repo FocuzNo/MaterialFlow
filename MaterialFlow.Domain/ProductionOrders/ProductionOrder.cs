@@ -2,6 +2,7 @@
 using MaterialFlow.Domain.PlannedProductionOrders;
 using MaterialFlow.Domain.Shared.ValueObjects;
 using MaterialFlow.Domain.Sites;
+using MaterialFlow.Domain.ProductionOrders.Events;
 
 namespace MaterialFlow.Domain.ProductionOrders;
 
@@ -15,8 +16,8 @@ public sealed class ProductionOrder : Entity
     public Guid SiteId { get; private set; }
     public Site Site { get; private set; }
 
-    public Guid? ConvertedFromPlannedOrderId { get; private set; }
-    public PlannedProductionOrder? ConvertedFromPlannedOrder { get; private set; }
+    public Guid? PlannedProductionOrderId { get; private set; }
+    public PlannedProductionOrder? PlannedProductionOrder { get; private set; }
 
     public Quantity QuantityToProduce { get; private set; }
 
@@ -32,24 +33,30 @@ public sealed class ProductionOrder : Entity
         Guid id,
         Guid materialId,
         Guid siteId,
-        Guid? convertedFromPlannedOrderId,
+        Guid? plannedProductionOrderId,
         Quantity quantityToProduce,
         UnitOfMeasure unitOfMeasure,
         DateOnly scheduledStartDate,
         DateOnly scheduledEndDate,
         OrderStatus orderStatus)
-        => new()
+    {
+        var order = new ProductionOrder
         {
             Id = id,
             MaterialId = materialId,
             SiteId = siteId,
-            ConvertedFromPlannedOrderId = convertedFromPlannedOrderId,
+            PlannedProductionOrderId = plannedProductionOrderId,
             QuantityToProduce = quantityToProduce,
             UnitOfMeasure = unitOfMeasure,
             ScheduledStartDate = scheduledStartDate,
             ScheduledEndDate = scheduledEndDate,
             OrderStatus = orderStatus
         };
+
+        order.RaiseDomainEvent(new ProductionOrderCreatedDomainEvent(order.Id));
+
+        return order;
+    }
 
     public void Update(
         Quantity quantityToProduce,
@@ -61,5 +68,19 @@ public sealed class ProductionOrder : Entity
         ScheduledStartDate = scheduledStartDate;
         ScheduledEndDate = scheduledEndDate;
         OrderStatus = orderStatus;
+
+        RaiseDomainEvent(new ProductionOrderUpdatedDomainEvent(Id));
+    }
+
+    public void Cancel()
+    {
+        if (OrderStatus == OrderStatus.Cancelled)
+        {
+            return;
+        }
+
+        OrderStatus = OrderStatus.Cancelled;
+
+        RaiseDomainEvent(new ProductionOrderCancelledDomainEvent(Id));
     }
 }
