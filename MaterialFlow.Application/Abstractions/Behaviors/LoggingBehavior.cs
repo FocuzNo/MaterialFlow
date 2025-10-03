@@ -20,7 +20,7 @@ internal sealed class LoggingBehavior<TRequest, TResponse>(ILogger<LoggingBehavi
         {
             _logger.LogInformation("Executing request {RequestName}", requestName);
 
-            TResponse result = await next();
+            TResponse result = await next(cancellationToken);
 
             if (result.IsSuccess)
             {
