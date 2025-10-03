@@ -1,9 +1,8 @@
 ﻿using MaterialFlow.Domain.Materials.Enums;
-using MaterialFlow.Domain.Shared.ValueObjects;
 
-namespace MaterialFlow.Application.Abstractions.Materials.Commands.Update;
+namespace MaterialFlow.Application.Materials.Commands.Create;
 
-public sealed record UpdateMaterialCommand(
+public sealed record CreateMaterialCommand(
     Guid Id,
     string MaterialNumber,
     string Description,
@@ -12,4 +11,4 @@ public sealed record UpdateMaterialCommand(
     LotSizePolicy LotSizePolicy,
     ProcurementType ProcurementType,
     int PlannedDeliveryTimeInDays,
-    Quantity SafetyStockQuantity) : IRequest<Result>;
+    Quantity SafetyStockQuantity) : IRequest<Guid>;

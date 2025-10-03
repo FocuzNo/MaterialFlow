@@ -1,6 +1,6 @@
 ﻿using MaterialFlow.Domain.Materials;
 
-namespace MaterialFlow.Application.Abstractions.Materials.Queries.GetMaterialById;
+namespace MaterialFlow.Application.Materials.Queries.GetMaterialById;
 
 public sealed class GetMaterialByIdQueryHandler(IMaterialRepository materialRepository)
     : IRequestHandler<GetMaterialByIdQuery, Result<MaterialResponse>>
@@ -26,8 +26,7 @@ public sealed class GetMaterialByIdQueryHandler(IMaterialRepository materialRepo
             material.ProcurementType.Name,
             material.PlannedDeliveryTimeInDays,
             material.SafetyStockQuantity.Amount,
-            material.IsActive
-        );
+            material.IsActive);
 
         return Result.Success(response);
     }

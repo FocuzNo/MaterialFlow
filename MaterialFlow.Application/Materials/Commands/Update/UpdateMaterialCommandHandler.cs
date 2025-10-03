@@ -1,7 +1,7 @@
 ﻿using MaterialFlow.Domain.Materials;
 using MaterialFlow.Domain.Materials.ValueObjects;
 
-namespace MaterialFlow.Application.Abstractions.Materials.Commands.Update;
+namespace MaterialFlow.Application.Materials.Commands.Update;
 
 public sealed class UpdateMaterialCommandHandler(
     IMaterialRepository materialRepository,

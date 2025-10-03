@@ -1,11 +1,10 @@
 ﻿using MaterialFlow.Domain.Materials;
 
-namespace MaterialFlow.Application.Abstractions.Materials.Commands.Deactivate;
+namespace MaterialFlow.Application.Materials.Commands.Deactivate;
 
 public sealed class DeactivateMaterialCommandHandler(
     IMaterialRepository materialRepository,
-    IUnitOfWork unitOfWork
-) : IRequestHandler<DeactivateMaterialCommand, Result>
+    IUnitOfWork unitOfWork) : IRequestHandler<DeactivateMaterialCommand, Result>
 {
     public async Task<Result> Handle(
         DeactivateMaterialCommand request,

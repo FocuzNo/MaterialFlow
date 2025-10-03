@@ -1,7 +1,7 @@
-﻿using MaterialFlow.Application.Abstractions.Materials.Queries.GetMaterialById;
+﻿using MaterialFlow.Application.Materials.Queries.GetMaterialById;
 using MaterialFlow.Domain.Materials;
 
-namespace MaterialFlow.Application.Abstractions.Materials.Queries.GetAllMaterials;
+namespace MaterialFlow.Application.Materials.Queries.GetAllMaterials;
 
 public sealed class GetAllMaterialsQueryHandler(IMaterialRepository materialRepository)
     : IRequestHandler<GetAllMaterialsQuery, Result<IReadOnlyList<MaterialResponse>>>

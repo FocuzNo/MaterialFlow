@@ -1,7 +1,7 @@
 ﻿using MaterialFlow.Domain.Materials;
 using MaterialFlow.Domain.Materials.ValueObjects;
 
-namespace MaterialFlow.Application.Abstractions.Materials.Commands.Create;
+namespace MaterialFlow.Application.Materials.Commands.Create;
 
 public sealed class CreateMaterialCommandHandler(
     IMaterialRepository materialRepository,

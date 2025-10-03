@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using MaterialFlow.Application.Abstractions.Behaviors;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MaterialFlow.Application;
 
@@ -10,7 +11,7 @@ public static class DependencyInjection
         {
             configuration.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
 
-            //configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));
+            configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));
 
             //configuration.AddOpenBehavior(typeof(ValidationBehavior<,>));
 
