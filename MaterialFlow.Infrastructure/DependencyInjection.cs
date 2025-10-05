@@ -1,7 +1,6 @@
 ﻿using MaterialFlow.Domain.Abstractions;
 using MaterialFlow.Domain.Materials;
 using MaterialFlow.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
