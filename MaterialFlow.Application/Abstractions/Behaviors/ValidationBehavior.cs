@@ -1,4 +1,5 @@
 ﻿using MaterialFlow.Application.Abstractions.Messaging;
+using MaterialFlow.Application.Exceptions;
 
 namespace MaterialFlow.Application.Abstractions.Behaviors;
 
