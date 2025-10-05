@@ -3,10 +3,11 @@
     <File Path=".editorconfig" />
   </Folder>
   <Folder Name="/src/">
+    <Project Path="MaterialFlow.Api/MaterialFlow.Api.csproj" Id="784af892-724f-4ea8-8a8d-7396c95e1193" />
     <Project Path="MaterialFlow.Application/MaterialFlow.Application.csproj" />
     <Project Path="MaterialFlow.Domain/MaterialFlow.Domain.csproj" />
     <Project Path="MaterialFlow.Infrastructure/MaterialFlow.Infrastructure.csproj" />
-    <Project Path="MaterialFlow.Persistence/MaterialFlow.Persistence.csproj" />
+    <Project Path="MaterialFlow.Persistence/MaterialFlow.Presentation.csproj" />
   </Folder>
   <Folder Name="/test/" />
 </Solution>
