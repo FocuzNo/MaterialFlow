@@ -13,7 +13,7 @@ public sealed class Material : Entity
 
     public string Description { get; private set; }
 
-    public UnitOfMeasure BaseUnitOfMeasure { get; private set; }
+    public UnitOfMeasure UnitOfMeasure { get; private set; }
 
     public MaterialRequirementsPlanningType MaterialRequirementsPlanningType { get; private set; }
 
@@ -31,7 +31,7 @@ public sealed class Material : Entity
         Guid id,
         MaterialNumber materialNumber,
         string description,
-        UnitOfMeasure baseUnitOfMeasure,
+        UnitOfMeasure unitOfMeasure,
         MaterialRequirementsPlanningType materialRequirementsPlanningType,
         LotSizePolicy lotSizePolicy,
         ProcurementType procurementType,
@@ -43,7 +43,7 @@ public sealed class Material : Entity
             Id = id,
             MaterialNumber = materialNumber,
             Description = description,
-            BaseUnitOfMeasure = baseUnitOfMeasure,
+            UnitOfMeasure = unitOfMeasure,
             MaterialRequirementsPlanningType = materialRequirementsPlanningType,
             LotSizePolicy = lotSizePolicy,
             ProcurementType = procurementType,
@@ -60,7 +60,7 @@ public sealed class Material : Entity
     public void Update(
         MaterialNumber materialNumber,
         string description,
-        UnitOfMeasure baseUnitOfMeasure,
+        UnitOfMeasure unitOfMeasure,
         MaterialRequirementsPlanningType materialRequirementsPlanningType,
         LotSizePolicy lotSizePolicy,
         ProcurementType procurementType,
@@ -69,7 +69,7 @@ public sealed class Material : Entity
     {
         MaterialNumber = materialNumber;
         Description = description;
-        BaseUnitOfMeasure = baseUnitOfMeasure;
+        UnitOfMeasure = unitOfMeasure;
         MaterialRequirementsPlanningType = materialRequirementsPlanningType;
         LotSizePolicy = lotSizePolicy;
         ProcurementType = procurementType;

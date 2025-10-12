@@ -1,4 +1,5 @@
 ﻿using MaterialFlow.Domain.Materials;
+using MaterialFlow.Domain.Materials.Enums;
 using MaterialFlow.Domain.Materials.ValueObjects;
 
 namespace MaterialFlow.Application.Materials.Commands.Create;
@@ -12,15 +13,17 @@ public sealed class CreateMaterialCommandHandler(
         CancellationToken cancellationToken)
     {
         var material = Material.Create(
-            request.Id,
+            Guid.NewGuid(),
             new MaterialNumber(request.MaterialNumber),
             request.Description,
-            request.BaseUnitOfMeasure,
-            request.MRPType,
-            request.LotSizePolicy,
-            request.ProcurementType,
+            new UnitOfMeasure(request.UnitOfMeasure),
+            MaterialRequirementsPlanningType.FromValue(request.MaterialRequirementsPlanningType),
+            LotSizePolicy.FromValue(request.LotSizePolicy),
+            ProcurementType.FromValue(request.ProcurementType),
             request.PlannedDeliveryTimeInDays,
-            request.SafetyStockQuantity);
+            new Quantity(
+                request.SafetyStockAmount,
+                new UnitOfMeasure(request.SafetyStockUnitOfMeasure)));
 
         await materialRepository.AddAsync(
             material,

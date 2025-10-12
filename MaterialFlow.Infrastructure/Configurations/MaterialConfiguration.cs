@@ -9,20 +9,30 @@ public sealed class MaterialConfiguration : IEntityTypeConfiguration<Material>
     {
         builder.HasKey(x => x.Id);
 
-        builder.OwnsOne(x => x.MaterialNumber, x =>
+        builder.OwnsOne(x => x.MaterialNumber, mn =>
         {
-            x.Property(x => x.Value)
-            .HasMaxLength(50);
+            mn.Property(p => p.Value)
+                .HasMaxLength(50);
+        });
+
+        builder.OwnsOne(x => x.UnitOfMeasure, uom =>
+        {
+            uom.Property(p => p.Value)
+               .HasMaxLength(20);
+        });
+
+        builder.OwnsOne(x => x.SafetyStockQuantity, ssq =>
+        {
+            ssq.Property(p => p.Amount).HasPrecision(18, 3);
+
+            ssq.OwnsOne(p => p.UnitOfMeasure, uom =>
+            {
+                uom.Property(p => p.Value).HasMaxLength(20);
+            });
         });
 
         builder.Property(x => x.Description)
             .HasMaxLength(250);
-
-        builder.Property(x => x.BaseUnitOfMeasure)
-            .HasConversion(
-                x => x.Value,
-                x => new UnitOfMeasure(x))
-            .HasMaxLength(20);
 
         builder.Property(x => x.MaterialRequirementsPlanningType)
             .HasConversion(
@@ -41,13 +51,5 @@ public sealed class MaterialConfiguration : IEntityTypeConfiguration<Material>
                 x => x.Name,
                 x => ProcurementType.FromName(x))
             .HasMaxLength(50);
-
-        builder.OwnsOne(x => x.SafetyStockQuantity, x =>
-        {
-            x.Property(p => p.Amount)
-             .HasPrecision(18, 3);
-        });
-
-        builder.Ignore(x => x.GetDomainEvents());
     }
 }

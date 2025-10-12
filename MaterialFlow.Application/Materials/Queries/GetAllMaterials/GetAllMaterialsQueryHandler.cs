@@ -16,7 +16,7 @@ public sealed class GetAllMaterialsQueryHandler(IMaterialRepository materialRepo
             x.Id,
             x.MaterialNumber.Value,
             x.Description,
-            x.BaseUnitOfMeasure.Value,
+            x.UnitOfMeasure.Value,
             x.MaterialRequirementsPlanningType.Name,
             x.LotSizePolicy.Name,
             x.ProcurementType.Name,

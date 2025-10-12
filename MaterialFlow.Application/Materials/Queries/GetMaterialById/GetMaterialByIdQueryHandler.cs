@@ -20,7 +20,7 @@ public sealed class GetMaterialByIdQueryHandler(IMaterialRepository materialRepo
             material.Id,
             material.MaterialNumber.Value,
             material.Description,
-            material.BaseUnitOfMeasure.Value,
+            material.UnitOfMeasure.Value,
             material.MaterialRequirementsPlanningType.Name,
             material.LotSizePolicy.Name,
             material.ProcurementType.Name,
