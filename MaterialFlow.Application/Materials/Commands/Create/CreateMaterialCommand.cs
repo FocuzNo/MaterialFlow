@@ -1,14 +1,12 @@
-﻿using MaterialFlow.Domain.Materials.Enums;
-
-namespace MaterialFlow.Application.Materials.Commands.Create;
+﻿namespace MaterialFlow.Application.Materials.Commands.Create;
 
 public sealed record CreateMaterialCommand(
-    Guid Id,
     string MaterialNumber,
     string Description,
-    UnitOfMeasure BaseUnitOfMeasure,
-    MaterialRequirementsPlanningType MRPType,
-    LotSizePolicy LotSizePolicy,
-    ProcurementType ProcurementType,
+    string UnitOfMeasure,
+    int MaterialRequirementsPlanningType,
+    int LotSizePolicy,
+    int ProcurementType,
     int PlannedDeliveryTimeInDays,
-    Quantity SafetyStockQuantity) : IRequest<Guid>;
+    decimal SafetyStockAmount,
+    string SafetyStockUnitOfMeasure) : IRequest<Guid>;

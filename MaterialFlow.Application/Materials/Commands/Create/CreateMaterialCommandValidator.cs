@@ -1,13 +1,9 @@
-﻿using MaterialFlow.Application.Materials.Commands.Create;
+﻿namespace MaterialFlow.Application.Materials.Commands.Create;
 
 public sealed class CreateMaterialCommandValidator : AbstractValidator<CreateMaterialCommand>
 {
     public CreateMaterialCommandValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty()
-            .WithMessage("Id is required.");
-
         RuleFor(x => x.MaterialNumber)
             .NotEmpty()
             .WithMessage("Material number is required.");
@@ -16,28 +12,32 @@ public sealed class CreateMaterialCommandValidator : AbstractValidator<CreateMat
             .NotEmpty()
             .WithMessage("Description is required.");
 
+        RuleFor(x => x.UnitOfMeasure)
+            .NotEmpty()
+            .WithMessage("Base unit of measure is required.");
+
+        RuleFor(x => x.MaterialRequirementsPlanningType)
+            .GreaterThan(0)
+            .WithMessage("Invalid MRP type.");
+
+        RuleFor(x => x.LotSizePolicy)
+            .GreaterThan(0)
+            .WithMessage("Invalid lot size policy.");
+
+        RuleFor(x => x.ProcurementType)
+            .GreaterThan(0)
+            .WithMessage("Invalid procurement type.");
+
         RuleFor(x => x.PlannedDeliveryTimeInDays)
             .GreaterThanOrEqualTo(0)
             .WithMessage("Planned delivery time must be non-negative.");
 
-        RuleFor(x => x.SafetyStockQuantity)
-            .Must(q => q.Amount >= 0)
-            .WithMessage("Safety stock quantity must be non-negative.");
+        RuleFor(x => x.SafetyStockAmount)
+            .GreaterThanOrEqualTo(0)
+            .WithMessage("Safety stock amount must be non-negative.");
 
-        RuleFor(x => x.BaseUnitOfMeasure)
-            .NotNull()
-            .WithMessage("Base unit of measure is required.");
-
-        RuleFor(x => x.MRPType)
-            .NotNull()
-            .WithMessage("MRP type is required.");
-
-        RuleFor(x => x.LotSizePolicy)
-            .NotNull()
-            .WithMessage("Lot size policy is required.");
-
-        RuleFor(x => x.ProcurementType)
-            .NotNull()
-            .WithMessage("Procurement type is required.");
+        RuleFor(x => x.SafetyStockUnitOfMeasure)
+            .NotEmpty()
+            .WithMessage("Safety stock unit of measure is required.");
     }
 }
