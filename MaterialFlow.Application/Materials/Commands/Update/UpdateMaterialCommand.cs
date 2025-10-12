@@ -1,14 +1,13 @@
-﻿using MaterialFlow.Domain.Materials.Enums;
-
-namespace MaterialFlow.Application.Materials.Commands.Update;
+﻿namespace MaterialFlow.Application.Materials.Commands.Update;
 
 public sealed record UpdateMaterialCommand(
     Guid Id,
     string MaterialNumber,
     string Description,
-    UnitOfMeasure BaseUnitOfMeasure,
-    MaterialRequirementsPlanningType MRPType,
-    LotSizePolicy LotSizePolicy,
-    ProcurementType ProcurementType,
+    string UnitOfMeasure,
+    int MaterialRequirementsPlanningType,
+    int LotSizePolicy,
+    int ProcurementType,
     int PlannedDeliveryTimeInDays,
-    Quantity SafetyStockQuantity) : IRequest<Result>;
+    decimal SafetyStockAmount,
+    string SafetyStockUnitOfMeasure) : IRequest<Result>;

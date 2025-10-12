@@ -21,20 +21,34 @@ internal sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValid
 
         var context = new ValidationContext<TRequest>(request);
 
-        var validationErrors = _validators
-            .Select(validator => validator.Validate(context))
-            .Where(validationResult => validationResult.Errors.Any())
-            .SelectMany(validationResult => validationResult.Errors)
-            .Select(validationFailure => new ValidationError(
-                validationFailure.PropertyName,
-                validationFailure.ErrorMessage))
+        var failures = _validators
+            .Select(v => v.Validate(context))
+            .Where(r => r.Errors.Any())
+            .SelectMany(r => r.Errors)
+            .Where(f => f != null)
             .ToList();
 
-        if (validationErrors.Any())
+        if (failures.Any())
         {
-            throw new Exceptions.ValidationException(validationErrors);
+            var errorsDictionary = failures
+                .GroupBy(f => f.PropertyName ?? string.Empty)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g
+                    .Select(f => f.ErrorMessage)
+                    .Where(m => !string.IsNullOrWhiteSpace(m))
+                    .Distinct()
+                    .ToArray()
+                );
+
+            var validationError = new ValidationError(
+                code: "Validation.Error",
+                description: "One or more validation errors occurred.",
+                errors: errorsDictionary);
+
+            throw new Exceptions.ValidationException([validationError]);
         }
 
-        return await next();
+        return await next(cancellationToken);
     }
 }

@@ -1,19 +1,20 @@
 ﻿using MaterialFlow.Application.Materials.Commands.Create;
-
 namespace MaterialFlow.Presentation.Endpoints.Materials;
 
-internal sealed class CreateMaterialEndpoint : IEndpoint
+internal sealed class Create : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPost("/materials", async (
-            CreateMaterialCommand request,
+        app.MapPost(Urls.Material, async (
+            CreateMaterialCommand command,
             ISender sender) =>
         {
-            var id = await sender.Send(request);
+            Result<Guid> result = await sender.Send(command);
 
-            return Result.Create($"/materials/{id}");
+            return result.Match(id => Results.Created(
+                $"{Urls.Material}/{id}", id),
+                _ => Results.Problem());
         })
-            .WithTags("Materials");
+            .WithTags(Tags.Material);
     }
 }
