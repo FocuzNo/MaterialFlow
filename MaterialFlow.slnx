@@ -7,7 +7,10 @@
     <Project Path="MaterialFlow.Application/MaterialFlow.Application.csproj" />
     <Project Path="MaterialFlow.Domain/MaterialFlow.Domain.csproj" />
     <Project Path="MaterialFlow.Infrastructure/MaterialFlow.Infrastructure.csproj" />
-    <Project Path="MaterialFlow.Persistence/MaterialFlow.Presentation.csproj" />
+    <Project Path="MaterialFlow.Presentation/MaterialFlow.Presentation.csproj" />
   </Folder>
   <Folder Name="/test/" />
+  <Project Path="docker-compose.dcproj">
+    <Build />
+  </Project>
 </Solution>

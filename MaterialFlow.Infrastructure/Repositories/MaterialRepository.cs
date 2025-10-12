@@ -2,5 +2,5 @@
 
 namespace MaterialFlow.Infrastructure.Repositories;
 
-internal sealed class MaterialRepository(DbContext dbContext)
+internal sealed class MaterialRepository(ApplicationDbContext dbContext)
     : Repository<Material>(dbContext), IMaterialRepository;
