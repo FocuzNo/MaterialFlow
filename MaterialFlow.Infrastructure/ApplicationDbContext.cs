@@ -4,7 +4,7 @@ using MaterialFlow.Domain.Abstractions;
 namespace MaterialFlow.Infrastructure;
 
 public sealed class ApplicationDbContext(
-    DbContextOptions options,
+    DbContextOptions<ApplicationDbContext> options,
     IPublisher publisher)
     : DbContext(options), IUnitOfWork
 {
