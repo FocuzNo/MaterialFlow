@@ -1,4 +1,5 @@
-﻿using MaterialFlow.Application.Materials.Queries.GetAll;
+﻿using MaterialFlow.Application.Materials.Queries;
+using MaterialFlow.Application.Materials.Queries.GetAll;
 
 namespace MaterialFlow.Presentation.Endpoints.Materials;
 

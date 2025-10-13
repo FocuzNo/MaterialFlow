@@ -11,7 +11,7 @@ internal sealed class GetAllMaterialsQueryHandler(IMaterialRepository materialRe
     {
         var materials = await materialRepository.GetAllAsync(cancellationToken);
 
-        IReadOnlyCollection<MaterialResponse> response = [.. materials
+        return Result.Success((IReadOnlyCollection<MaterialResponse>)[.. materials
             .Select(x => new MaterialResponse(
                 x.Id,
                 x.MaterialNumber.Value,
@@ -23,8 +23,6 @@ internal sealed class GetAllMaterialsQueryHandler(IMaterialRepository materialRe
                 x.PlannedDeliveryTimeInDays,
                 x.SafetyStockQuantity.Amount,
                 x.IsActive)
-            )];
-
-        return Result.Success(response);
+            )]);
     }
 }
