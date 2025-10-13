@@ -2,5 +2,6 @@
 
 internal static class Urls
 {
-    internal const string Material = "/materials";
+    internal const string Materials = "/materials";
+    internal const string ComponentReservations = "/component-reservations";
 }

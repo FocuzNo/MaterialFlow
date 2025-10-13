@@ -1,6 +1,6 @@
 ﻿namespace MaterialFlow.Application.Materials.Commands.Update;
 
-public sealed class UpdateMaterialCommandValidator : AbstractValidator<UpdateMaterialCommand>
+internal sealed class UpdateMaterialCommandValidator : AbstractValidator<UpdateMaterialCommand>
 {
     public UpdateMaterialCommandValidator()
     {

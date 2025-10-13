@@ -4,7 +4,7 @@ using MaterialFlow.Domain.Materials.ValueObjects;
 
 namespace MaterialFlow.Application.Materials.Commands.Update;
 
-public sealed class UpdateMaterialCommandHandler(
+internal sealed class UpdateMaterialCommandHandler(
     IMaterialRepository materialRepository,
     IUnitOfWork unitOfWork) : IRequestHandler<UpdateMaterialCommand, Result>
 {

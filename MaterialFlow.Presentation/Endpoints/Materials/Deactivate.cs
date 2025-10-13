@@ -6,7 +6,7 @@ internal sealed class Deactivate : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapDelete($"{Urls.Material}/{{id:guid}}", async (
+        app.MapDelete(Urls.Materials, async (
             Guid id,
             ISender sender) =>
         {
@@ -16,6 +16,6 @@ internal sealed class Deactivate : IEndpoint
                 Results.NoContent,
                 ApiResults.Problem);
         })
-            .WithTags(Tags.Material);
+        .WithTags(Tags.Materials);
     }
 }

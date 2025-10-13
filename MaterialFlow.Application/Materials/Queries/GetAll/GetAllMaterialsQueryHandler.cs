@@ -1,9 +1,8 @@
-﻿using MaterialFlow.Application.Materials.Queries.GetMaterialById;
-using MaterialFlow.Domain.Materials;
+﻿using MaterialFlow.Domain.Materials;
 
-namespace MaterialFlow.Application.Materials.Queries.GetAllMaterials;
+namespace MaterialFlow.Application.Materials.Queries.GetAll;
 
-public sealed class GetAllMaterialsQueryHandler(IMaterialRepository materialRepository)
+internal sealed class GetAllMaterialsQueryHandler(IMaterialRepository materialRepository)
     : IRequestHandler<GetAllMaterialsQuery, Result<IReadOnlyCollection<MaterialResponse>>>
 {
     public async Task<Result<IReadOnlyCollection<MaterialResponse>>> Handle(
@@ -23,8 +22,8 @@ public sealed class GetAllMaterialsQueryHandler(IMaterialRepository materialRepo
                 x.ProcurementType.Name,
                 x.PlannedDeliveryTimeInDays,
                 x.SafetyStockQuantity.Amount,
-                x.IsActive
-            ))];
+                x.IsActive)
+            )];
 
         return Result.Success(response);
     }

@@ -1,6 +1,6 @@
 ﻿namespace MaterialFlow.Application.Materials.Commands.Deactivate;
 
-public sealed class DeactivateMaterialCommandValidator : AbstractValidator<DeactivateMaterialCommand>
+internal sealed class DeactivateMaterialCommandValidator : AbstractValidator<DeactivateMaterialCommand>
 {
     public DeactivateMaterialCommandValidator()
     {
