@@ -4,7 +4,7 @@ using MaterialFlow.Domain.Materials.ValueObjects;
 
 namespace MaterialFlow.Application.Materials.Commands.Create;
 
-public sealed class CreateMaterialCommandHandler(
+internal sealed class CreateMaterialCommandHandler(
     IMaterialRepository materialRepository,
     IUnitOfWork unitOfWork) : IRequestHandler<CreateMaterialCommand, Guid>
 {

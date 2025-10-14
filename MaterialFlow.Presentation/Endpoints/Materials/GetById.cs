@@ -1,4 +1,4 @@
-﻿using MaterialFlow.Application.Materials.Queries.GetMaterialById;
+﻿using MaterialFlow.Application.Materials.Queries.GetById;
 
 namespace MaterialFlow.Presentation.Endpoints.Materials;
 
@@ -6,7 +6,7 @@ internal sealed class GetById : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapGet($"{Urls.Material}/{{id:guid}}", async (
+        app.MapGet($"{Urls.Materials}/{{id}}", async (
             Guid id,
             ISender sender) =>
         {
@@ -16,6 +16,6 @@ internal sealed class GetById : IEndpoint
                 Results.Ok,
                 ApiResults.Problem);
         })
-            .WithTags(Tags.Material);
+        .WithTags(Tags.Materials);
     }
 }

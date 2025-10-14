@@ -1,10 +1,10 @@
-﻿namespace MaterialFlow.Application.Materials.Queries.GetMaterialById;
+﻿namespace MaterialFlow.Application.Materials.Queries.GetById;
 
 public sealed record MaterialResponse(
     Guid Id,
     string MaterialNumber,
     string Description,
-    string BaseUnitOfMeasure,
+    string UnitOfMeasure,
     string MRPType,
     string LotSizePolicy,
     string ProcurementType,

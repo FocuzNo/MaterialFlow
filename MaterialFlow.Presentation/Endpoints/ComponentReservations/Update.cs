@@ -1,13 +1,13 @@
-﻿using MaterialFlow.Application.Materials.Commands.Update;
+﻿using MaterialFlow.Application.ComponentReservations.Commands.Update;
 
-namespace MaterialFlow.Presentation.Endpoints.Materials;
+namespace MaterialFlow.Presentation.Endpoints.ComponentReservations;
 
 internal sealed class Update : IEndpoint
 {
     public void MapEndpoint(IEndpointRouteBuilder app)
     {
-        app.MapPut(Urls.Materials, async (
-            UpdateMaterialCommand command,
+        app.MapPut(Urls.ComponentReservations, async (
+            UpdateComponentReservationCommand command,
             ISender sender) =>
         {
             var result = await sender.Send(command);
@@ -16,6 +16,6 @@ internal sealed class Update : IEndpoint
                 Results.NoContent,
                 ApiResults.Problem);
         })
-        .WithTags(Tags.Materials);
+        .WithTags(Tags.ComponentReservations);
     }
 }

@@ -1,11 +1,13 @@
 ﻿using MaterialFlow.Domain.Materials;
 
-namespace MaterialFlow.Application.Materials.Queries.GetMaterialById;
+namespace MaterialFlow.Application.Materials.Queries.GetById;
 
-public sealed class GetMaterialByIdQueryHandler(IMaterialRepository materialRepository)
+internal sealed class GetMaterialByIdQueryHandler(IMaterialRepository materialRepository)
     : IRequestHandler<GetMaterialByIdQuery, Result<MaterialResponse>>
 {
-    public async Task<Result<MaterialResponse>> Handle(GetMaterialByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<MaterialResponse>> Handle(
+        GetMaterialByIdQuery request,
+        CancellationToken cancellationToken)
     {
         var material = await materialRepository.GetByIdAsync(
             request.Id,

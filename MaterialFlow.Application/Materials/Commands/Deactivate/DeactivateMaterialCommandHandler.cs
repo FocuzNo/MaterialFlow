@@ -2,7 +2,7 @@
 
 namespace MaterialFlow.Application.Materials.Commands.Deactivate;
 
-public sealed class DeactivateMaterialCommandHandler(
+internal sealed class DeactivateMaterialCommandHandler(
     IMaterialRepository materialRepository,
     IUnitOfWork unitOfWork) : IRequestHandler<DeactivateMaterialCommand, Result>
 {

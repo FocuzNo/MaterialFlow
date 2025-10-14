@@ -2,5 +2,6 @@
 
 internal static class Tags
 {
-    internal const string Material = nameof(Material);
+    internal const string Materials = nameof(Materials);
+    internal const string ComponentReservations = nameof(ComponentReservations);
 }

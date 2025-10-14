@@ -1,6 +1,6 @@
 ﻿namespace MaterialFlow.Application.Materials.Commands.Create;
 
-public sealed class CreateMaterialCommandValidator : AbstractValidator<CreateMaterialCommand>
+internal sealed class CreateMaterialCommandValidator : AbstractValidator<CreateMaterialCommand>
 {
     public CreateMaterialCommandValidator()
     {
