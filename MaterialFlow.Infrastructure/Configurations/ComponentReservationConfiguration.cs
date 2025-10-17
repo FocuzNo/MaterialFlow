@@ -20,7 +20,7 @@ public sealed class ComponentReservationConfiguration : BaseEntityConfiguration<
                    .HasMaxLength(20);
             });
         });
-        
+
         builder.Property(x => x.Status)
             .HasConversion(
                 x => x.Name,
