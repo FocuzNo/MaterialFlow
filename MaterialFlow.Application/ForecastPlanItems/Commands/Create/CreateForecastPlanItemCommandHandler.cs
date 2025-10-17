@@ -1,4 +1,4 @@
-﻿using MaterialFlow.Domain.ForecastPlans;
+﻿using MaterialFlow.Domain.ForecastPlanItems;
 
 namespace MaterialFlow.Application.ForecastPlanItems.Commands.Create;
 

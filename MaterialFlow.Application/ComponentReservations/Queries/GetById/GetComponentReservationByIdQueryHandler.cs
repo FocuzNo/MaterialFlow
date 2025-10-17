@@ -28,7 +28,7 @@ internal sealed class GetComponentReservationByIdQueryHandler(IComponentReservat
             componentReservation.Site.Name,
             componentReservation.RequirementDate,
             componentReservation.Quantity.Amount,
-            componentReservation.UnitOfMeasure.Value,
+            componentReservation.Quantity.UnitOfMeasure.Value,
             componentReservation.Status.Name);
 
         return Result.Success(response);

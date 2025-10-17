@@ -3,11 +3,11 @@ using MaterialFlow.Domain.Materials.Enums;
 
 namespace MaterialFlow.Infrastructure.Configurations;
 
-public sealed class ForecastPlanConfiguration : IEntityTypeConfiguration<ForecastPlan>
+public sealed class ForecastPlanConfiguration : BaseEntityConfiguration<ForecastPlan>
 {
-    public void Configure(EntityTypeBuilder<ForecastPlan> builder)
+    public override void Configure(EntityTypeBuilder<ForecastPlan> builder)
     {
-        builder.HasKey(x => x.Id);
+        base.Configure(builder);
 
         builder.Property(x => x.Version)
             .HasMaxLength(50);
@@ -30,6 +30,7 @@ public sealed class ForecastPlanConfiguration : IEntityTypeConfiguration<Forecas
         builder.OwnsOne(x => x.DateRange, dr =>
         {
             dr.Property(p => p.StartDate);
+
             dr.Property(p => p.EndDate);
         });
     }

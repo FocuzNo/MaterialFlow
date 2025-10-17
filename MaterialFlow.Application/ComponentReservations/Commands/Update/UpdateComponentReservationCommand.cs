@@ -4,5 +4,5 @@ public sealed record UpdateComponentReservationCommand(
     Guid Id,
     DateOnly RequirementDate,
     decimal QuantityAmount,
-    string UnitOfMeasure,
+    string QuantityUnitOfMeasure,
     int Status) : IRequest<Result>;

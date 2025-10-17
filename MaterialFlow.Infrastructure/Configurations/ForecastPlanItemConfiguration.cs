@@ -1,12 +1,12 @@
-﻿using MaterialFlow.Domain.ForecastPlans;
+﻿using MaterialFlow.Domain.ForecastPlanItems;
 
 namespace MaterialFlow.Infrastructure.Configurations;
 
-public sealed class ForecastPlanItemConfiguration : IEntityTypeConfiguration<ForecastPlanItem>
+public sealed class ForecastPlanItemConfiguration : BaseEntityConfiguration<ForecastPlanItem>
 {
-    public void Configure(EntityTypeBuilder<ForecastPlanItem> builder)
+    public override void Configure(EntityTypeBuilder<ForecastPlanItem> builder)
     {
-        builder.HasKey(x => x.Id);
+        base.Configure(builder);
 
         builder.OwnsOne(x => x.Quantity, q =>
         {

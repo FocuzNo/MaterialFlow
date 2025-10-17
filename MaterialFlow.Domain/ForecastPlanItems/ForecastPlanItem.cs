@@ -1,7 +1,8 @@
 ﻿using MaterialFlow.Domain.Shared.ValueObjects;
-using MaterialFlow.Domain.ForecastPlans.Events;
+using MaterialFlow.Domain.ForecastPlans;
+using MaterialFlow.Domain.ForecastPlanItems.Events;
 
-namespace MaterialFlow.Domain.ForecastPlans;
+namespace MaterialFlow.Domain.ForecastPlanItems;
 
 public sealed class ForecastPlanItem : Entity
 {
