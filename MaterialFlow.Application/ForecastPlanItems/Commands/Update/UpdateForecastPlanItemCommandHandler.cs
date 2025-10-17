@@ -22,7 +22,7 @@ internal sealed class UpdateForecastPlanItemCommandHandler(
         forecastPlanItem.Update(
             request.PeriodStartDate,
             new Quantity(
-                request.Quantity, 
+                request.Quantity,
                 new UnitOfMeasure(request.UnitOfMeasure)),
             request.ConsumptionIndicator);
 

@@ -10,7 +10,7 @@ internal sealed class GetAllForecastPlansQueryHandler(IForecastPlanRepository fo
         CancellationToken cancellationToken)
     {
         var forecastPlans = await forecastPlanRepository.GetAllAsync(cancellationToken);
-        
+
         return Result.Success((IReadOnlyCollection<ForecastPlanResponse>)[.. forecastPlans
             .Select(x => new ForecastPlanResponse(
                 x.Id,
