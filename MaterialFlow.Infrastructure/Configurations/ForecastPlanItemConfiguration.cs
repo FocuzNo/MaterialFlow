@@ -2,7 +2,7 @@
 
 namespace MaterialFlow.Infrastructure.Configurations;
 
-public sealed class ForecastPlanItemConfiguration : BaseEntityConfiguration<ForecastPlanItem>
+internal sealed class ForecastPlanItemConfiguration : BaseEntityConfiguration<ForecastPlanItem>
 {
     public override void Configure(EntityTypeBuilder<ForecastPlanItem> builder)
     {

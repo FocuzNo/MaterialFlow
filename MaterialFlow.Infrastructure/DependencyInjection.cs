@@ -2,6 +2,7 @@
 using MaterialFlow.Domain.ComponentReservations;
 using MaterialFlow.Domain.ForecastPlanItems;
 using MaterialFlow.Domain.ForecastPlans;
+using MaterialFlow.Domain.InventoryBalances;
 using MaterialFlow.Domain.Materials;
 using MaterialFlow.Infrastructure.Repositories;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +31,8 @@ public static class DependencyInjection
         services.AddScoped<IForecastPlanItemRepository, ForecastPlanItemRepository>();
 
         services.AddScoped<IComponentReservationRepository, ComponentReservationRepository>();
+
+        services.AddScoped<IInventoryBalanceRepository, InventoryBalanceRepository>();
 
         services.AddMediatR(cfg =>
                 cfg.RegisterServicesFromAssemblies(typeof(ApplicationDbContext).Assembly));

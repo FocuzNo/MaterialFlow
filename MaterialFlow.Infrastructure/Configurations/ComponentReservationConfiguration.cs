@@ -3,7 +3,7 @@ using MaterialFlow.Domain.Shared.ValueObjects;
 
 namespace MaterialFlow.Infrastructure.Configurations;
 
-public sealed class ComponentReservationConfiguration : BaseEntityConfiguration<ComponentReservation>
+internal sealed class ComponentReservationConfiguration : BaseEntityConfiguration<ComponentReservation>
 {
     public override void Configure(EntityTypeBuilder<ComponentReservation> builder)
     {

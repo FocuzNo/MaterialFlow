@@ -3,7 +3,7 @@ using MaterialFlow.Domain.Materials.Enums;
 
 namespace MaterialFlow.Infrastructure.Configurations;
 
-public sealed class ForecastPlanConfiguration : BaseEntityConfiguration<ForecastPlan>
+internal sealed class ForecastPlanConfiguration : BaseEntityConfiguration<ForecastPlan>
 {
     public override void Configure(EntityTypeBuilder<ForecastPlan> builder)
     {
