@@ -7,5 +7,5 @@ public sealed record CreateComponentReservationCommand(
     Guid SiteId,
     DateOnly RequirementDate,
     decimal QuantityAmount,
-    string UnitOfMeasure,
+    string QuantityUnitOfMeasure,
     int Status) : IRequest<Guid>;

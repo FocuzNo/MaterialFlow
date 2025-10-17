@@ -1,6 +1,5 @@
-﻿using MaterialFlow.Domain.ComponentReservations;
-
-namespace MaterialFlow.Application.ComponentReservations.Commands.Create;
+﻿using MaterialFlow.Application.ComponentReservations.Commands.Create;
+using MaterialFlow.Domain.ComponentReservations;
 
 public sealed class CreateComponentReservationCommandHandler(
     IComponentReservationRepository componentReservationRepository,
@@ -19,8 +18,7 @@ public sealed class CreateComponentReservationCommandHandler(
             request.RequirementDate,
             new Quantity(
                 request.QuantityAmount,
-                new UnitOfMeasure(request.UnitOfMeasure)),
-            new UnitOfMeasure(request.UnitOfMeasure),
+                new UnitOfMeasure(request.QuantityUnitOfMeasure)),
             ReservationStatus.FromValue(request.Status));
 
         await componentReservationRepository.AddAsync(

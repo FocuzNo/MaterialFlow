@@ -1,0 +1,33 @@
+﻿using MaterialFlow.Domain.ForecastPlanItems;
+
+namespace MaterialFlow.Application.ForecastPlanItems.Commands.Update;
+
+internal sealed class UpdateForecastPlanItemCommandHandler(
+    IForecastPlanItemRepository forecastPlanItemRepository,
+    IUnitOfWork unitOfWork) : IRequestHandler<UpdateForecastPlanItemCommand, Result>
+{
+    public async Task<Result> Handle(
+        UpdateForecastPlanItemCommand request,
+        CancellationToken cancellationToken)
+    {
+        var forecastPlanItem = await forecastPlanItemRepository.GetByIdAsync(
+            request.Id,
+            cancellationToken);
+
+        if (forecastPlanItem is null)
+        {
+            return Result.Failure(ForecastPlanItemErrors.NotFound);
+        }
+
+        forecastPlanItem.Update(
+            request.PeriodStartDate,
+            new Quantity(
+                request.Quantity,
+                new UnitOfMeasure(request.UnitOfMeasure)),
+            request.ConsumptionIndicator);
+
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
+    }
+}

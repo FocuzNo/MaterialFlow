@@ -8,12 +8,11 @@ public static class EndpointExtensions
 {
     public static IServiceCollection AddEndpoints(this IServiceCollection services, params Assembly[] assemblies)
     {
-        ServiceDescriptor[] serviceDescriptors = assemblies
+        ServiceDescriptor[] serviceDescriptors = [.. assemblies
             .SelectMany(a => a.GetTypes())
             .Where(type => type is { IsAbstract: false, IsInterface: false } &&
                            type.IsAssignableTo(typeof(IEndpoint)))
-            .Select(type => ServiceDescriptor.Transient(typeof(IEndpoint), type))
-            .ToArray();
+            .Select(type => ServiceDescriptor.Transient(typeof(IEndpoint), type))];
 
         services.TryAddEnumerable(serviceDescriptors);
 

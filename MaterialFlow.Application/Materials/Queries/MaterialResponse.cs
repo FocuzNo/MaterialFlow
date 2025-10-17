@@ -1,4 +1,4 @@
-﻿namespace MaterialFlow.Application.Materials.Queries.GetById;
+﻿namespace MaterialFlow.Application.Materials.Queries;
 
 public sealed record MaterialResponse(
     Guid Id,

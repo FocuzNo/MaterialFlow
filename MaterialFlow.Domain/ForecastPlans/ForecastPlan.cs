@@ -4,6 +4,7 @@ using MaterialFlow.Domain.PlanningAreas;
 using MaterialFlow.Domain.Shared.ValueObjects;
 using MaterialFlow.Domain.Sites;
 using MaterialFlow.Domain.ForecastPlans.Events;
+using MaterialFlow.Domain.ForecastPlanItems;
 
 namespace MaterialFlow.Domain.ForecastPlans;
 

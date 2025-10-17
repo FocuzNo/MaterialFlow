@@ -1,5 +1,5 @@
-﻿using MaterialFlow.Application.ComponentReservations.Queries.GetAll;
-using MaterialFlow.Application.ComponentReservations.Queries.GetById;
+﻿using MaterialFlow.Application.ComponentReservations.Queries;
+using MaterialFlow.Application.ComponentReservations.Queries.GetAll;
 
 namespace MaterialFlow.Presentation.Endpoints.ComponentReservations;
 

@@ -1,4 +1,4 @@
-﻿namespace MaterialFlow.Application.ComponentReservations.Queries.GetById;
+﻿namespace MaterialFlow.Application.ComponentReservations.Queries;
 
 public sealed record ComponentReservationResponse(
     Guid Id,

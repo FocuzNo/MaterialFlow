@@ -3,11 +3,11 @@ using MaterialFlow.Domain.Materials.Enums;
 
 namespace MaterialFlow.Infrastructure.Configurations;
 
-public sealed class MaterialConfiguration : IEntityTypeConfiguration<Material>
+public sealed class MaterialConfiguration : BaseEntityConfiguration<Material>
 {
-    public void Configure(EntityTypeBuilder<Material> builder)
+    public override void Configure(EntityTypeBuilder<Material> builder)
     {
-        builder.HasKey(x => x.Id);
+        base.Configure(builder);
 
         builder.OwnsOne(x => x.MaterialNumber, mn =>
         {
@@ -23,11 +23,13 @@ public sealed class MaterialConfiguration : IEntityTypeConfiguration<Material>
 
         builder.OwnsOne(x => x.SafetyStockQuantity, ssq =>
         {
-            ssq.Property(p => p.Amount).HasPrecision(18, 3);
+            ssq.Property(p => p.Amount)
+                .HasPrecision(18, 3);
 
             ssq.OwnsOne(p => p.UnitOfMeasure, uom =>
             {
-                uom.Property(p => p.Value).HasMaxLength(20);
+                uom.Property(p => p.Value)
+                    .HasMaxLength(20);
             });
         });
 

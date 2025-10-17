@@ -1,4 +1,4 @@
-﻿namespace MaterialFlow.Domain.ForecastPlans;
+﻿namespace MaterialFlow.Domain.ForecastPlanItems;
 
 public static class ForecastPlanItemErrors
 {

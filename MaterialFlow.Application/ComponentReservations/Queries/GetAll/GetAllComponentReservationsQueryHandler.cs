@@ -1,5 +1,4 @@
-﻿using MaterialFlow.Application.ComponentReservations.Queries.GetById;
-using MaterialFlow.Domain.ComponentReservations;
+﻿using MaterialFlow.Domain.ComponentReservations;
 
 namespace MaterialFlow.Application.ComponentReservations.Queries.GetAll;
 
@@ -23,7 +22,7 @@ internal sealed class GetAllComponentReservationsQueryHandler(IComponentReservat
                 x.Site.Name,
                 x.RequirementDate,
                 x.Quantity.Amount,
-                x.UnitOfMeasure.Value,
+                x.Quantity.UnitOfMeasure.Value,
                 x.Status.Name)
             )];
 

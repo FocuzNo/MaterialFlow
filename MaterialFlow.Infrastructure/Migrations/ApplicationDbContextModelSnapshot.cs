@@ -22,6 +22,132 @@ namespace MaterialFlow.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("MaterialFlow.Domain.ComponentReservations.ComponentReservation", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("MaterialId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("material_id");
+
+                    b.Property<DateOnly>("RequirementDate")
+                        .HasColumnType("date")
+                        .HasColumnName("requirement_date");
+
+                    b.Property<Guid>("SiteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("site_id");
+
+                    b.Property<Guid>("SourceOrderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("source_order_id");
+
+                    b.Property<string>("SourceOrderType")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("source_order_type");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("status");
+
+                    b.HasKey("Id")
+                        .HasName("pk_component_reservation");
+
+                    b.HasIndex("MaterialId")
+                        .HasDatabaseName("ix_component_reservation_material_id");
+
+                    b.HasIndex("SiteId")
+                        .HasDatabaseName("ix_component_reservation_site_id");
+
+                    b.ToTable("component_reservation", (string)null);
+                });
+
+            modelBuilder.Entity("MaterialFlow.Domain.ForecastPlanItems.ForecastPlanItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("ConsumptionIndicator")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("consumption_indicator");
+
+                    b.Property<Guid>("ForecastPlanId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("forecast_plan_id");
+
+                    b.Property<DateOnly>("PeriodStartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("period_start_date");
+
+                    b.HasKey("Id")
+                        .HasName("pk_forecast_plan_item");
+
+                    b.HasIndex("ForecastPlanId")
+                        .HasDatabaseName("ix_forecast_plan_item_forecast_plan_id");
+
+                    b.ToTable("forecast_plan_item", (string)null);
+                });
+
+            modelBuilder.Entity("MaterialFlow.Domain.ForecastPlans.ForecastPlan", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("MaterialId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("material_id");
+
+                    b.Property<int>("PeriodGranularity")
+                        .HasMaxLength(2)
+                        .HasColumnType("integer")
+                        .HasColumnName("period_granularity");
+
+                    b.Property<Guid?>("PlanningAreaId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("planning_area_id");
+
+                    b.Property<string>("PlanningStrategy")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("planning_strategy");
+
+                    b.Property<Guid?>("SiteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("site_id");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("version");
+
+                    b.HasKey("Id")
+                        .HasName("pk_forecast_plan");
+
+                    b.HasIndex("MaterialId")
+                        .HasDatabaseName("ix_forecast_plan_material_id");
+
+                    b.HasIndex("PlanningAreaId")
+                        .HasDatabaseName("ix_forecast_plan_planning_area_id");
+
+                    b.HasIndex("SiteId")
+                        .HasDatabaseName("ix_forecast_plan_site_id");
+
+                    b.ToTable("forecast_plan", (string)null);
+                });
+
             modelBuilder.Entity("MaterialFlow.Domain.Materials.Material", b =>
                 {
                     b.Property<Guid>("Id")
@@ -67,11 +193,208 @@ namespace MaterialFlow.Infrastructure.Migrations
                     b.ToTable("material", (string)null);
                 });
 
-            modelBuilder.Entity("MaterialFlow.Domain.Materials.Material", b =>
+            modelBuilder.Entity("MaterialFlow.Domain.PlanningAreas.PlanningArea", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("PlanningAreaCode")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("planning_area_code");
+
+                    b.Property<Guid>("SiteId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("site_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_planning_area");
+
+                    b.HasIndex("SiteId")
+                        .HasDatabaseName("ix_planning_area_site_id");
+
+                    b.ToTable("planning_area", (string)null);
+                });
+
+            modelBuilder.Entity("MaterialFlow.Domain.Sites.Site", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.Property<string>("PlantCode")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("plant_code");
+
+                    b.HasKey("Id")
+                        .HasName("pk_site");
+
+                    b.ToTable("site", (string)null);
+                });
+
+            modelBuilder.Entity("MaterialFlow.Domain.ComponentReservations.ComponentReservation", b =>
+                {
+                    b.HasOne("MaterialFlow.Domain.Materials.Material", "Material")
+                        .WithMany()
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_component_reservation_material_material_id");
+
+                    b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
+                        .WithMany()
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_component_reservation_site_site_id");
+
+                    b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.Quantity", "Quantity", b1 =>
+                        {
+                            b1.Property<Guid>("ComponentReservationId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 3)
+                                .HasColumnType("numeric(18,3)")
+                                .HasColumnName("quantity_amount");
+
+                            b1.HasKey("ComponentReservationId");
+
+                            b1.ToTable("component_reservation");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ComponentReservationId")
+                                .HasConstraintName("fk_component_reservation_component_reservation_id");
+
+                            b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
+                                {
+                                    b2.Property<Guid>("QuantityComponentReservationId")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("id");
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasMaxLength(20)
+                                        .HasColumnType("character varying(20)")
+                                        .HasColumnName("quantity_unit_of_measure_value");
+
+                                    b2.HasKey("QuantityComponentReservationId");
+
+                                    b2.ToTable("component_reservation");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("QuantityComponentReservationId")
+                                        .HasConstraintName("fk_component_reservation_component_reservation_id");
+                                });
+
+                            b1.Navigation("UnitOfMeasure")
+                                .IsRequired();
+                        });
+
+                    b.Navigation("Material");
+
+                    b.Navigation("Quantity")
+                        .IsRequired();
+
+                    b.Navigation("Site");
+                });
+
+            modelBuilder.Entity("MaterialFlow.Domain.ForecastPlanItems.ForecastPlanItem", b =>
+                {
+                    b.HasOne("MaterialFlow.Domain.ForecastPlans.ForecastPlan", "ForecastPlan")
+                        .WithMany("Items")
+                        .HasForeignKey("ForecastPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_forecast_plan_item_forecast_plan_forecast_plan_id");
+
+                    b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.Quantity", "Quantity", b1 =>
+                        {
+                            b1.Property<Guid>("ForecastPlanItemId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<decimal>("Amount")
+                                .HasPrecision(18, 3)
+                                .HasColumnType("numeric(18,3)")
+                                .HasColumnName("quantity_amount");
+
+                            b1.HasKey("ForecastPlanItemId");
+
+                            b1.ToTable("forecast_plan_item");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ForecastPlanItemId")
+                                .HasConstraintName("fk_forecast_plan_item_forecast_plan_item_id");
+
+                            b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
+                                {
+                                    b2.Property<Guid>("QuantityForecastPlanItemId")
+                                        .HasColumnType("uuid")
+                                        .HasColumnName("id");
+
+                                    b2.Property<string>("Value")
+                                        .IsRequired()
+                                        .HasMaxLength(20)
+                                        .HasColumnType("character varying(20)")
+                                        .HasColumnName("quantity_unit_of_measure_value");
+
+                                    b2.HasKey("QuantityForecastPlanItemId");
+
+                                    b2.ToTable("forecast_plan_item");
+
+                                    b2.WithOwner()
+                                        .HasForeignKey("QuantityForecastPlanItemId")
+                                        .HasConstraintName("fk_forecast_plan_item_forecast_plan_item_id");
+                                });
+
+                            b1.Navigation("UnitOfMeasure")
+                                .IsRequired();
+                        });
+
+                    b.Navigation("ForecastPlan");
+
+                    b.Navigation("Quantity")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MaterialFlow.Domain.ForecastPlans.ForecastPlan", b =>
+                {
+                    b.HasOne("MaterialFlow.Domain.Materials.Material", "Material")
+                        .WithMany()
+                        .HasForeignKey("MaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_forecast_plan_material_material_id");
+
+                    b.HasOne("MaterialFlow.Domain.PlanningAreas.PlanningArea", "PlanningArea")
+                        .WithMany()
+                        .HasForeignKey("PlanningAreaId")
+                        .HasConstraintName("fk_forecast_plan_planning_area_planning_area_id");
+
+                    b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
+                        .WithMany()
+                        .HasForeignKey("SiteId")
+                        .HasConstraintName("fk_forecast_plan_site_site_id");
+
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b1 =>
                         {
-                            b1.Property<Guid>("MaterialId")
+                            b1.Property<Guid>("ForecastPlanId")
                                 .HasColumnType("uuid")
                                 .HasColumnName("id");
 
@@ -81,36 +404,53 @@ namespace MaterialFlow.Infrastructure.Migrations
                                 .HasColumnType("character varying(20)")
                                 .HasColumnName("unit_of_measure_value");
 
-                            b1.HasKey("MaterialId");
+                            b1.HasKey("ForecastPlanId");
 
-                            b1.ToTable("material");
+                            b1.ToTable("forecast_plan");
 
                             b1.WithOwner()
-                                .HasForeignKey("MaterialId")
-                                .HasConstraintName("fk_material_material_id");
+                                .HasForeignKey("ForecastPlanId")
+                                .HasConstraintName("fk_forecast_plan_forecast_plan_id");
                         });
 
-                    b.OwnsOne("MaterialFlow.Domain.Materials.ValueObjects.MaterialNumber", "MaterialNumber", b1 =>
+                    b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.DateRange", "DateRange", b1 =>
                         {
-                            b1.Property<Guid>("MaterialId")
+                            b1.Property<Guid>("ForecastPlanId")
                                 .HasColumnType("uuid")
                                 .HasColumnName("id");
 
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(50)
-                                .HasColumnType("character varying(50)")
-                                .HasColumnName("material_number_value");
+                            b1.Property<DateOnly>("EndDate")
+                                .HasColumnType("date")
+                                .HasColumnName("date_range_end_date");
 
-                            b1.HasKey("MaterialId");
+                            b1.Property<DateOnly>("StartDate")
+                                .HasColumnType("date")
+                                .HasColumnName("date_range_start_date");
 
-                            b1.ToTable("material");
+                            b1.HasKey("ForecastPlanId");
+
+                            b1.ToTable("forecast_plan");
 
                             b1.WithOwner()
-                                .HasForeignKey("MaterialId")
-                                .HasConstraintName("fk_material_material_id");
+                                .HasForeignKey("ForecastPlanId")
+                                .HasConstraintName("fk_forecast_plan_forecast_plan_id");
                         });
 
+                    b.Navigation("DateRange")
+                        .IsRequired();
+
+                    b.Navigation("Material");
+
+                    b.Navigation("PlanningArea");
+
+                    b.Navigation("Site");
+
+                    b.Navigation("UnitOfMeasure")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MaterialFlow.Domain.Materials.Material", b =>
+                {
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.Quantity", "SafetyStockQuantity", b1 =>
                         {
                             b1.Property<Guid>("MaterialId")
@@ -155,6 +495,48 @@ namespace MaterialFlow.Infrastructure.Migrations
                                 .IsRequired();
                         });
 
+                    b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b1 =>
+                        {
+                            b1.Property<Guid>("MaterialId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(20)
+                                .HasColumnType("character varying(20)")
+                                .HasColumnName("unit_of_measure_value");
+
+                            b1.HasKey("MaterialId");
+
+                            b1.ToTable("material");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MaterialId")
+                                .HasConstraintName("fk_material_material_id");
+                        });
+
+                    b.OwnsOne("MaterialFlow.Domain.Materials.ValueObjects.MaterialNumber", "MaterialNumber", b1 =>
+                        {
+                            b1.Property<Guid>("MaterialId")
+                                .HasColumnType("uuid")
+                                .HasColumnName("id");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasMaxLength(50)
+                                .HasColumnType("character varying(50)")
+                                .HasColumnName("material_number_value");
+
+                            b1.HasKey("MaterialId");
+
+                            b1.ToTable("material");
+
+                            b1.WithOwner()
+                                .HasForeignKey("MaterialId")
+                                .HasConstraintName("fk_material_material_id");
+                        });
+
                     b.Navigation("MaterialNumber")
                         .IsRequired();
 
@@ -163,6 +545,23 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                     b.Navigation("UnitOfMeasure")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MaterialFlow.Domain.PlanningAreas.PlanningArea", b =>
+                {
+                    b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
+                        .WithMany()
+                        .HasForeignKey("SiteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_planning_area_site_site_id");
+
+                    b.Navigation("Site");
+                });
+
+            modelBuilder.Entity("MaterialFlow.Domain.ForecastPlans.ForecastPlan", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

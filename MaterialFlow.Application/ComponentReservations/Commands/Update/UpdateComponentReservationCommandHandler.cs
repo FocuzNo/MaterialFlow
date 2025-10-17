@@ -1,6 +1,5 @@
-﻿using MaterialFlow.Domain.ComponentReservations;
-
-namespace MaterialFlow.Application.ComponentReservations.Commands.Update;
+﻿using MaterialFlow.Application.ComponentReservations.Commands.Update;
+using MaterialFlow.Domain.ComponentReservations;
 
 public sealed class UpdateComponentReservationCommandHandler(
     IComponentReservationRepository componentReservationRepository,
@@ -23,8 +22,7 @@ public sealed class UpdateComponentReservationCommandHandler(
             request.RequirementDate,
             new Quantity(
                 request.QuantityAmount,
-                new UnitOfMeasure(request.UnitOfMeasure)),
-            new UnitOfMeasure(request.UnitOfMeasure),
+                new UnitOfMeasure(request.QuantityUnitOfMeasure)),
             ReservationStatus.FromValue(request.Status));
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
