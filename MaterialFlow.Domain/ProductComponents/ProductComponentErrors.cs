@@ -1,4 +1,4 @@
-﻿namespace MaterialFlow.Domain.ProductStructures;
+﻿namespace MaterialFlow.Domain.ProductComponents;
 
 public static class ProductComponentErrors
 {

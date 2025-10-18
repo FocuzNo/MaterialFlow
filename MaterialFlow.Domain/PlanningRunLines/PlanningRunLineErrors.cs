@@ -1,4 +1,4 @@
-﻿namespace MaterialFlow.Domain.PlanningRuns;
+﻿namespace MaterialFlow.Domain.PlanningRunLines;
 
 public static class PlanningRunLineErrors
 {

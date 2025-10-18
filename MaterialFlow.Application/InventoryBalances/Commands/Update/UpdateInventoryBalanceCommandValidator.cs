@@ -6,30 +6,31 @@ internal sealed class UpdateInventoryBalanceCommandValidator : AbstractValidator
     {
         RuleFor(x => x.Id)
             .NotEmpty()
-            .WithMessage("Inventory balance ID is required.");
+            .WithMessage("Id is required.");
 
         RuleFor(x => x.OnHandAmount)
             .GreaterThanOrEqualTo(0)
-            .PrecisionScale(18, 3, true)
-            .WithMessage("On-hand amount must be non-negative and within precision (18,3).");
+            .WithMessage("On hand amount must be non-negative.");
+
+        RuleFor(x => x.OnHandUnitOfMeasure)
+            .NotEmpty()
+            .WithMessage("On hand unit of measure is required.");
 
         RuleFor(x => x.ReservedAmount)
             .GreaterThanOrEqualTo(0)
-            .PrecisionScale(18, 3, true)
-            .WithMessage("Reserved amount must be non-negative and within precision (18,3).");
+            .WithMessage("Reserved amount must be non-negative.");
 
-        RuleFor(x => x.OnHandUnit)
+        RuleFor(x => x.ReservedUnitOfMeasure)
             .NotEmpty()
-            .MaximumLength(20)
-            .WithMessage("On-hand unit of measure is required and must not exceed 20 characters.");
-
-        RuleFor(x => x.ReservedUnit)
-            .NotEmpty()
-            .MaximumLength(20)
-            .WithMessage("Reserved unit of measure is required and must not exceed 20 characters.");
+            .WithMessage("Reserved unit of measure is required.");
 
         RuleFor(x => x.Batch)
-            .MaximumLength(100)
-            .WithMessage("Batch cannot exceed 100 characters.");
+            .MaximumLength(50)
+            .WithMessage("Batch must not exceed 50 characters.")
+            .When(x => !string.IsNullOrEmpty(x.Batch));
+
+        RuleFor(x => x.ReservedAmount)
+            .LessThanOrEqualTo(x => x.OnHandAmount)
+            .WithMessage("Reserved amount cannot exceed on hand amount.");
     }
 }

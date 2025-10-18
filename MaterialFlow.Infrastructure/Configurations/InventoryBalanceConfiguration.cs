@@ -2,33 +2,33 @@
 
 namespace MaterialFlow.Infrastructure.Configurations;
 
-public sealed class InventoryBalanceConfiguration : BaseEntityConfiguration<InventoryBalance>
+internal sealed class InventoryBalanceConfiguration : BaseEntityConfiguration<InventoryBalance>
 {
     public override void Configure(EntityTypeBuilder<InventoryBalance> builder)
     {
         base.Configure(builder);
 
-        builder.OwnsOne(x => x.OnHand, q =>
+        builder.OwnsOne(x => x.OnHand, onHand =>
         {
-            q.Property(p => p.Amount)
-                .HasPrecision(18, 3);
+            onHand.Property(p => p.Amount)
+                .HasPrecision(21, 3);
 
-            q.OwnsOne(p => p.UnitOfMeasure, uom =>
+            onHand.OwnsOne(p => p.UnitOfMeasure, uom =>
             {
-                uom.Property(u => u.Value)
-                   .HasMaxLength(20);
+                uom.Property(p => p.Value)
+                    .HasMaxLength(20);
             });
         });
 
-        builder.OwnsOne(x => x.Reserved, q =>
+        builder.OwnsOne(x => x.Reserved, reserved =>
         {
-            q.Property(p => p.Amount)
-                .HasPrecision(18, 3);
+            reserved.Property(p => p.Amount)
+                .HasPrecision(21, 3);
 
-            q.OwnsOne(p => p.UnitOfMeasure, uom =>
+            reserved.OwnsOne(p => p.UnitOfMeasure, uom =>
             {
-                uom.Property(u => u.Value)
-                   .HasMaxLength(20);
+                uom.Property(p => p.Value)
+                    .HasMaxLength(20);
             });
         });
 

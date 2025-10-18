@@ -4,6 +4,6 @@ public sealed record ForecastPlanItemResponse(
     Guid Id,
     Guid ForecastPlanId,
     DateOnly PeriodStartDate,
-    decimal Quantity,
-    string UnitOfMeasure,
+    decimal QuantityAmount,
+    string QuantityUnitOfMeasure,
     string? ConsumptionIndicator);

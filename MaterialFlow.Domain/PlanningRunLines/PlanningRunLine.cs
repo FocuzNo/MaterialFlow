@@ -1,8 +1,9 @@
 ﻿using MaterialFlow.Domain.Materials;
+using MaterialFlow.Domain.PlanningRuns;
 using MaterialFlow.Domain.Shared.ValueObjects;
 using MaterialFlow.Domain.Sites;
 
-namespace MaterialFlow.Domain.PlanningRuns;
+namespace MaterialFlow.Domain.PlanningRunLines;
 
 public sealed class PlanningRunLine : Entity
 {

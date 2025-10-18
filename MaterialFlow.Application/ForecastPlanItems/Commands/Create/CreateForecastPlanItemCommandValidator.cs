@@ -6,14 +6,27 @@ internal sealed class CreateForecastPlanItemCommandValidator : AbstractValidator
     {
         RuleFor(x => x.ForecastPlanId)
             .NotEmpty()
-            .WithMessage("ForecastPlanId is required.");
+            .WithMessage("Forecast plan ID is required.");
 
-        RuleFor(x => x.Quantity)
-            .GreaterThanOrEqualTo(0)
-            .WithMessage("Quantity must be non-negative.");
-
-        RuleFor(x => x.UnitOfMeasure)
+        RuleFor(x => x.PeriodStartDate)
             .NotEmpty()
-            .WithMessage("UnitOfMeasure is required.");
+            .WithMessage("Period start date is required.");
+
+        RuleFor(x => x.QuantityAmount)
+            .GreaterThan(0)
+            .WithMessage("Quantity amount must be greater than zero.")
+            .PrecisionScale(21, 3, false)
+            .WithMessage("Quantity amount must have precision 18, scale 3.");
+
+        RuleFor(x => x.QuantityUnitOfMeasure)
+            .NotEmpty()
+            .WithMessage("Quantity unit of measure is required.")
+            .MaximumLength(20)
+            .WithMessage("Quantity unit of measure must not exceed 20 characters.");
+
+        RuleFor(x => x.ConsumptionIndicator)
+            .MaximumLength(50)
+            .WithMessage("Consumption indicator must not exceed 50 characters.")
+            .When(x => !string.IsNullOrEmpty(x.ConsumptionIndicator));
     }
 }

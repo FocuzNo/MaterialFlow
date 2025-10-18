@@ -11,21 +11,17 @@ internal sealed class GetAllComponentReservationsQueryHandler(IComponentReservat
     {
         var componentReservations = await componentReservationRepository.GetAllAsync(cancellationToken);
 
-        IReadOnlyCollection<ComponentReservationResponse> response = [.. componentReservations
+        return Result.Success((IReadOnlyCollection<ComponentReservationResponse>)[.. componentReservations
             .Select(x => new ComponentReservationResponse(
                 x.Id,
                 x.SourceOrderType,
                 x.SourceOrderId,
                 x.MaterialId,
-                x.Material.MaterialNumber.Value,
                 x.SiteId,
-                x.Site.Name,
                 x.RequirementDate,
                 x.Quantity.Amount,
                 x.Quantity.UnitOfMeasure.Value,
                 x.Status.Name)
-            )];
-
-        return Result.Success(response);
+            )]);
     }
 }

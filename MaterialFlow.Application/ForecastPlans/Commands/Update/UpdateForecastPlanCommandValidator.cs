@@ -10,18 +10,32 @@ internal sealed class UpdateForecastPlanCommandValidator : AbstractValidator<Upd
 
         RuleFor(x => x.Version)
             .NotEmpty()
-            .WithMessage("Version is required.");
+            .WithMessage("Version is required.")
+            .MaximumLength(50)
+            .WithMessage("Version must not exceed 50 characters.");
 
         RuleFor(x => x.PlanningStrategy)
             .NotEmpty()
-            .WithMessage("PlanningStrategy is required.");
+            .WithMessage("Planning strategy is required.")
+            .MaximumLength(50)
+            .WithMessage("Planning strategy must not exceed 50 characters.");
 
         RuleFor(x => x.UnitOfMeasure)
             .NotEmpty()
-            .WithMessage("UnitOfMeasure is required.");
+            .WithMessage("Unit of measure is required.");
+
+        RuleFor(x => x.PeriodGranularity)
+            .GreaterThan(0)
+            .WithMessage("Invalid period granularity.");
 
         RuleFor(x => x.StartDate)
-            .LessThanOrEqualTo(x => x.EndDate)
-            .WithMessage("StartDate must be before or equal to EndDate.");
+            .NotEmpty()
+            .WithMessage("Start date is required.");
+
+        RuleFor(x => x.EndDate)
+            .NotEmpty()
+            .WithMessage("End date is required.")
+            .GreaterThan(x => x.StartDate)
+            .WithMessage("End date must be greater than start date.");
     }
 }

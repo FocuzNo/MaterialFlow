@@ -20,9 +20,7 @@ internal sealed class CreateForecastPlanCommandHandler(
             request.PlanningStrategy,
             new UnitOfMeasure(request.UnitOfMeasure),
             PeriodGranularity.FromValue(request.PeriodGranularity),
-            new DateRange(
-                request.StartDate,
-                request.EndDate));
+            new DateRange(request.StartDate, request.EndDate));
 
         await forecastPlanRepository.AddAsync(
             forecastPlan,

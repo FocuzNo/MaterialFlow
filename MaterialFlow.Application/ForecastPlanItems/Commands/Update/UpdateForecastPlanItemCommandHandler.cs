@@ -1,4 +1,5 @@
 ﻿using MaterialFlow.Domain.ForecastPlanItems;
+using MaterialFlow.Domain.Shared.ValueObjects;
 
 namespace MaterialFlow.Application.ForecastPlanItems.Commands.Update;
 
@@ -22,8 +23,8 @@ internal sealed class UpdateForecastPlanItemCommandHandler(
         forecastPlanItem.Update(
             request.PeriodStartDate,
             new Quantity(
-                request.Quantity,
-                new UnitOfMeasure(request.UnitOfMeasure)),
+                request.QuantityAmount,
+                new UnitOfMeasure(request.QuantityUnitOfMeasure)),
             request.ConsumptionIndicator);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

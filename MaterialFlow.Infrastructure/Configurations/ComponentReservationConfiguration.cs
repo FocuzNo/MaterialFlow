@@ -9,6 +9,9 @@ internal sealed class ComponentReservationConfiguration : BaseEntityConfiguratio
     {
         base.Configure(builder);
 
+        builder.Property(x => x.SourceOrderType)
+            .HasMaxLength(50);
+
         builder.OwnsOne(x => x.Quantity, q =>
         {
             q.Property(p => p.Amount)
@@ -16,8 +19,8 @@ internal sealed class ComponentReservationConfiguration : BaseEntityConfiguratio
 
             q.OwnsOne(p => p.UnitOfMeasure, uom =>
             {
-                uom.Property(u => u.Value)
-                   .HasMaxLength(20);
+                uom.Property(p => p.Value)
+                    .HasMaxLength(20);
             });
         });
 

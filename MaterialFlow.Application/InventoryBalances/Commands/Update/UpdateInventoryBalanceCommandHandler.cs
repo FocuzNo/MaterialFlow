@@ -2,23 +2,30 @@
 
 namespace MaterialFlow.Application.InventoryBalances.Commands.Update;
 
-public sealed class UpdateInventoryBalanceCommandHandler(
-    IInventoryBalanceRepository repository,
-    IUnitOfWork unitOfWork)
-    : IRequestHandler<UpdateInventoryBalanceCommand, Result>
+internal sealed class UpdateInventoryBalanceCommandHandler(
+    IInventoryBalanceRepository inventoryBalanceRepository,
+    IUnitOfWork unitOfWork) : IRequestHandler<UpdateInventoryBalanceCommand, Result>
 {
-    public async Task<Result> Handle(UpdateInventoryBalanceCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(
+        UpdateInventoryBalanceCommand request,
+        CancellationToken cancellationToken)
     {
-        var entity = await repository.GetByIdAsync(request.Id, cancellationToken);
+        var inventoryBalance = await inventoryBalanceRepository.GetByIdAsync(
+            request.Id,
+            cancellationToken);
 
-        if (entity is null)
+        if (inventoryBalance is null)
         {
             return Result.Failure(InventoryBalanceErrors.NotFound);
         }
 
-        entity.Update(
-            new Quantity(request.OnHandAmount, new UnitOfMeasure(request.OnHandUnit)),
-            new Quantity(request.ReservedAmount, new UnitOfMeasure(request.ReservedUnit)),
+        inventoryBalance.Update(
+            new Quantity(
+                request.OnHandAmount,
+                new UnitOfMeasure(request.OnHandUnitOfMeasure)),
+            new Quantity(
+                request.ReservedAmount,
+                new UnitOfMeasure(request.ReservedUnitOfMeasure)),
             request.Batch);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);

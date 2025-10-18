@@ -1,6 +1,6 @@
 ﻿namespace MaterialFlow.Application.ComponentReservations.Commands.Delete;
 
-public sealed class DeleteComponentReservationCommandValidator : AbstractValidator<DeleteComponentReservationCommand>
+internal sealed class DeleteComponentReservationCommandValidator : AbstractValidator<DeleteComponentReservationCommand>
 {
     public DeleteComponentReservationCommandValidator()
     {

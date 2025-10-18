@@ -2,7 +2,7 @@
 
 namespace MaterialFlow.Application.ComponentReservations.Commands.Delete;
 
-public sealed class DeleteComponentReservationCommandHandler(
+internal sealed class DeleteComponentReservationCommandHandler(
     IComponentReservationRepository componentReservationRepository,
     IUnitOfWork unitOfWork) : IRequestHandler<DeleteComponentReservationCommand, Result>
 {

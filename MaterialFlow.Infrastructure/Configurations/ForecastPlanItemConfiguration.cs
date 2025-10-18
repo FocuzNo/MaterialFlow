@@ -11,12 +11,12 @@ internal sealed class ForecastPlanItemConfiguration : BaseEntityConfiguration<Fo
         builder.OwnsOne(x => x.Quantity, q =>
         {
             q.Property(p => p.Amount)
-             .HasPrecision(18, 3);
+                .HasPrecision(21, 3);
 
             q.OwnsOne(p => p.UnitOfMeasure, uom =>
             {
                 uom.Property(p => p.Value)
-                   .HasMaxLength(20);
+                    .HasMaxLength(20);
             });
         });
 

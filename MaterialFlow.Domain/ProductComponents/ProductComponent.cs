@@ -1,7 +1,8 @@
 ﻿using MaterialFlow.Domain.Materials;
+using MaterialFlow.Domain.ProductStructures;
 using MaterialFlow.Domain.Shared.ValueObjects;
 
-namespace MaterialFlow.Domain.ProductStructures;
+namespace MaterialFlow.Domain.ProductComponents;
 
 public sealed class ProductComponent : Entity
 {

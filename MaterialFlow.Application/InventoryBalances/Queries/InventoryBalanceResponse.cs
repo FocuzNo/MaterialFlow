@@ -3,13 +3,10 @@
 public sealed record InventoryBalanceResponse(
     Guid Id,
     Guid MaterialId,
-    string MaterialNumber,
     Guid SiteId,
-    string SiteName,
     Guid? StorageLocationId,
-    string? StorageLocationName,
     decimal OnHandAmount,
-    string OnHandUnit,
+    string OnHandUnitOfMeasure,
     decimal ReservedAmount,
-    string ReservedUnit,
+    string ReservedUnitOfMeasure,
     string? Batch);

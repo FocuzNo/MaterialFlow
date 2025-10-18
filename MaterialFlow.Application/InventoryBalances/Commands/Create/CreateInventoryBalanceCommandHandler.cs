@@ -1,8 +1,9 @@
 ﻿using MaterialFlow.Domain.InventoryBalances;
+using MaterialFlow.Domain.Shared.ValueObjects;
 
 namespace MaterialFlow.Application.InventoryBalances.Commands.Create;
 
-public sealed class CreateInventoryBalanceCommandHandler(
+internal sealed class CreateInventoryBalanceCommandHandler(
     IInventoryBalanceRepository inventoryBalanceRepository,
     IUnitOfWork unitOfWork) : IRequestHandler<CreateInventoryBalanceCommand, Guid>
 {

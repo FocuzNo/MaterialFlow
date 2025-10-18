@@ -2,21 +2,24 @@
 
 namespace MaterialFlow.Application.InventoryBalances.Commands.Delete;
 
-public sealed class DeleteInventoryBalanceCommandHandler(
-    IInventoryBalanceRepository repository,
-    IUnitOfWork unitOfWork)
-    : IRequestHandler<DeleteInventoryBalanceCommand, Result>
+internal sealed class DeleteInventoryBalanceCommandHandler(
+    IInventoryBalanceRepository inventoryBalanceRepository,
+    IUnitOfWork unitOfWork) : IRequestHandler<DeleteInventoryBalanceCommand, Result>
 {
-    public async Task<Result> Handle(DeleteInventoryBalanceCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(
+        DeleteInventoryBalanceCommand request,
+        CancellationToken cancellationToken)
     {
-        var entity = await repository.GetByIdAsync(request.Id, cancellationToken);
+        var inventoryBalance = await inventoryBalanceRepository.GetByIdAsync(
+            request.Id,
+            cancellationToken);
 
-        if (entity is null)
+        if (inventoryBalance is null)
         {
             return Result.Failure(InventoryBalanceErrors.NotFound);
         }
 
-        repository.Delete(entity);
+        inventoryBalanceRepository.Delete(inventoryBalance);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

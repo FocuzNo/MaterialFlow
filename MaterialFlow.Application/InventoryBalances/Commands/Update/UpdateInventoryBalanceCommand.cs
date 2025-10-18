@@ -3,7 +3,7 @@
 public sealed record UpdateInventoryBalanceCommand(
     Guid Id,
     decimal OnHandAmount,
-    string OnHandUnit,
+    string OnHandUnitOfMeasure,
     decimal ReservedAmount,
-    string ReservedUnit,
+    string ReservedUnitOfMeasure,
     string? Batch) : IRequest<Result>;
