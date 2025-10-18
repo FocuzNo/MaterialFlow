@@ -1,5 +1,4 @@
 ﻿using MaterialFlow.Domain.PlannedProductionOrders;
-using MaterialFlow.Domain.Shared.ValueObjects;
 
 namespace MaterialFlow.Application.PlannedProductionOrders.Commands.Create;
 

@@ -1,5 +1,4 @@
 ﻿using MaterialFlow.Domain.ForecastPlanItems;
-using MaterialFlow.Domain.Shared.ValueObjects;
 
 namespace MaterialFlow.Application.ForecastPlanItems.Commands.Update;
 

@@ -1,5 +1,4 @@
 ﻿using MaterialFlow.Domain.InventoryBalances;
-using MaterialFlow.Domain.Shared.ValueObjects;
 
 namespace MaterialFlow.Application.InventoryBalances.Commands.Create;
 
