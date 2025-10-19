@@ -3,7 +3,7 @@ using MaterialFlow.Domain.Materials.Enums;
 
 namespace MaterialFlow.Infrastructure.Configurations;
 
-public sealed class MaterialConfiguration : BaseEntityConfiguration<Material>
+internal sealed class MaterialConfiguration : BaseEntityConfiguration<Material>
 {
     public override void Configure(EntityTypeBuilder<Material> builder)
     {

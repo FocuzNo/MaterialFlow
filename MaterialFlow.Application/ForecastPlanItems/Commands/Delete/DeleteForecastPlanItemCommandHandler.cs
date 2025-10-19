@@ -21,6 +21,8 @@ internal sealed class DeleteForecastPlanItemCommandHandler(
 
         forecastPlanItem.Delete();
 
+        forecastPlanItemRepository.Delete(forecastPlanItem);
+
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();

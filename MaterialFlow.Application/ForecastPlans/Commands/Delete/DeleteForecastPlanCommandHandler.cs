@@ -19,7 +19,7 @@ internal sealed class DeleteForecastPlanCommandHandler(
             return Result.Failure(ForecastPlanErrors.NotFound);
         }
 
-        forecastPlan.Delete();
+        forecastPlanRepository.Delete(forecastPlan);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

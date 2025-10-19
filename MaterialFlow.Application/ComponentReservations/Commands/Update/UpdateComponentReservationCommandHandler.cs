@@ -1,7 +1,8 @@
-﻿using MaterialFlow.Application.ComponentReservations.Commands.Update;
-using MaterialFlow.Domain.ComponentReservations;
+﻿using MaterialFlow.Domain.ComponentReservations;
 
-public sealed class UpdateComponentReservationCommandHandler(
+namespace MaterialFlow.Application.ComponentReservations.Commands.Update;
+
+internal sealed class UpdateComponentReservationCommandHandler(
     IComponentReservationRepository componentReservationRepository,
     IUnitOfWork unitOfWork) : IRequestHandler<UpdateComponentReservationCommand, Result>
 {

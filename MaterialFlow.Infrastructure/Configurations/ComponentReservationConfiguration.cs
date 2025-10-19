@@ -3,11 +3,14 @@ using MaterialFlow.Domain.Shared.ValueObjects;
 
 namespace MaterialFlow.Infrastructure.Configurations;
 
-public sealed class ComponentReservationConfiguration : BaseEntityConfiguration<ComponentReservation>
+internal sealed class ComponentReservationConfiguration : BaseEntityConfiguration<ComponentReservation>
 {
     public override void Configure(EntityTypeBuilder<ComponentReservation> builder)
     {
         base.Configure(builder);
+
+        builder.Property(x => x.SourceOrderType)
+            .HasMaxLength(50);
 
         builder.OwnsOne(x => x.Quantity, q =>
         {
@@ -16,8 +19,8 @@ public sealed class ComponentReservationConfiguration : BaseEntityConfiguration<
 
             q.OwnsOne(p => p.UnitOfMeasure, uom =>
             {
-                uom.Property(u => u.Value)
-                   .HasMaxLength(20);
+                uom.Property(p => p.Value)
+                    .HasMaxLength(20);
             });
         });
 

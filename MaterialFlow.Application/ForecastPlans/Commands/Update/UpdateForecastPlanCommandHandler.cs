@@ -25,9 +25,7 @@ internal sealed class UpdateForecastPlanCommandHandler(
             request.PlanningStrategy,
             new UnitOfMeasure(request.UnitOfMeasure),
             PeriodGranularity.FromValue(request.PeriodGranularity),
-            new DateRange(
-                request.StartDate,
-                request.EndDate));
+            new DateRange(request.StartDate, request.EndDate));
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 

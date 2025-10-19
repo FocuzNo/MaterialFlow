@@ -1,7 +1,8 @@
-﻿using MaterialFlow.Application.ComponentReservations.Commands.Create;
-using MaterialFlow.Domain.ComponentReservations;
+﻿using MaterialFlow.Domain.ComponentReservations;
 
-public sealed class CreateComponentReservationCommandHandler(
+namespace MaterialFlow.Application.ComponentReservations.Commands.Create;
+
+internal sealed class CreateComponentReservationCommandHandler(
     IComponentReservationRepository componentReservationRepository,
     IUnitOfWork unitOfWork) : IRequestHandler<CreateComponentReservationCommand, Guid>
 {

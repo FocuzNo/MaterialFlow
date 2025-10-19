@@ -5,10 +5,8 @@ public sealed record ComponentReservationResponse(
     string SourceOrderType,
     Guid SourceOrderId,
     Guid MaterialId,
-    string MaterialNumber,
     Guid SiteId,
-    string SiteName,
     DateOnly RequirementDate,
     decimal QuantityAmount,
-    string UnitOfMeasure,
+    string QuantityUnitOfMeasure,
     string Status);

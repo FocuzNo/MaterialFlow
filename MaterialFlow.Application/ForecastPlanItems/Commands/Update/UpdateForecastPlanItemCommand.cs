@@ -3,6 +3,6 @@
 public sealed record UpdateForecastPlanItemCommand(
     Guid Id,
     DateOnly PeriodStartDate,
-    decimal Quantity,
-    string UnitOfMeasure,
+    decimal QuantityAmount,
+    string QuantityUnitOfMeasure,
     string? ConsumptionIndicator) : IRequest<Result>;

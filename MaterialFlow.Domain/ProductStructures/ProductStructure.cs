@@ -1,5 +1,6 @@
 ﻿using MaterialFlow.Domain.Materials;
 using MaterialFlow.Domain.Materials.Enums;
+using MaterialFlow.Domain.ProductComponents;
 using MaterialFlow.Domain.Shared.ValueObjects;
 using MaterialFlow.Domain.Sites;
 
@@ -70,15 +71,6 @@ public sealed class ProductStructure : Entity
         return component;
     }
 
-    public void RemoveComponent(Guid componentId)
-    {
-        var component = _components
-            .FirstOrDefault(x => x.Id == componentId);
-
-        if (component is not null)
-            _components.Remove(component);
-    }
-
     public void Update(
         Guid materialId,
         Guid? siteId,
@@ -95,5 +87,15 @@ public sealed class ProductStructure : Entity
         ValidFromDate = validFromDate;
         ValidToDate = validToDate;
         OrderStatus = orderStatus;
+    }
+
+    public void RemoveComponent(Guid componentId)
+    {
+        var component = _components.FirstOrDefault(x => x.Id == componentId);
+
+        if (component is not null)
+        {
+            _components.Remove(component);
+        }
     }
 }

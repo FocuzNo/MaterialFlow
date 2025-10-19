@@ -22,8 +22,8 @@ internal sealed class UpdateForecastPlanItemCommandHandler(
         forecastPlanItem.Update(
             request.PeriodStartDate,
             new Quantity(
-                request.Quantity,
-                new UnitOfMeasure(request.UnitOfMeasure)),
+                request.QuantityAmount,
+                new UnitOfMeasure(request.QuantityUnitOfMeasure)),
             request.ConsumptionIndicator);
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
