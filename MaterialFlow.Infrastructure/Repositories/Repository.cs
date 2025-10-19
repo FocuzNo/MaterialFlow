@@ -6,7 +6,7 @@ public class Repository<TEntity>(ApplicationDbContext dbContext)
     : IRepository<TEntity> where TEntity : Entity
 {
     private readonly ApplicationDbContext _dbContext = dbContext;
-    private readonly DbSet<TEntity> _dbSet = dbContext.Set<TEntity>();
+    internal readonly DbSet<TEntity> _dbSet = dbContext.Set<TEntity>();
 
     public async Task<TEntity?> GetByIdAsync(
         Guid id,

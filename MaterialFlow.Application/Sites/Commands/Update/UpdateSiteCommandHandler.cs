@@ -19,6 +19,16 @@ internal sealed class UpdateSiteCommandHandler(
             return Result.Failure(SiteErrors.NotFound);
         }
 
+        var isUnique = await siteRepository.IsUniqueAsync(
+            request.Id,
+            request.PlantCode,
+            cancellationToken);
+
+        if (!isUnique)
+        {
+            return Result.Failure<Guid>(SiteErrors.AlreadyExists);
+        }
+
         site.Update(
             request.PlantCode,
             request.Name);

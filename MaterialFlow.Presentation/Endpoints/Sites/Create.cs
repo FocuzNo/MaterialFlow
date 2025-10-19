@@ -10,9 +10,12 @@ internal sealed class Create : IEndpoint
             CreateSiteCommand command,
             ISender sender) =>
         {
-            Guid id = await sender.Send(command);
+            var result = await sender.Send(command);
 
-            return Results.Created($"{Urls.Sites}/{id}", id);
+            return result.Match(
+                id => Results.Created($"{Urls.Sites}/{id}", id),
+                ApiResults.Problem
+            );
         })
         .WithTags(Tags.Sites);
     }

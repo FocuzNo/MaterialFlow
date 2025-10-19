@@ -1,15 +1,23 @@
-﻿using MaterialFlow.Domain.Sites;
-
-namespace MaterialFlow.Application.Sites.Commands.Create;
+﻿using MaterialFlow.Application.Sites.Commands.Create;
+using MaterialFlow.Domain.Sites;
 
 internal sealed class CreateSiteCommandHandler(
     ISiteRepository siteRepository,
-    IUnitOfWork unitOfWork) : IRequestHandler<CreateSiteCommand, Guid>
+    IUnitOfWork unitOfWork) : IRequestHandler<CreateSiteCommand, Result<Guid>>
 {
-    public async Task<Guid> Handle(
+    public async Task<Result<Guid>> Handle(
         CreateSiteCommand request,
         CancellationToken cancellationToken)
     {
+        var isUnique = await siteRepository.IsUniqueAsync(
+            request.PlantCode,
+            cancellationToken);
+
+        if (!isUnique)
+        {
+            return Result.Failure<Guid>(SiteErrors.AlreadyExists);
+        }
+
         var site = Site.Create(
             Guid.NewGuid(),
             request.PlantCode,
@@ -21,6 +29,6 @@ internal sealed class CreateSiteCommandHandler(
 
         await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return site.Id;
+        return Result.Success(site.Id);
     }
 }

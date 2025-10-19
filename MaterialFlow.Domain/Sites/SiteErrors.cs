@@ -9,4 +9,8 @@ public static class SiteErrors
     public static readonly Error InvalidUpdate = new(
         $"{nameof(Site)}.{InvalidUpdate}",
         "The site update is invalid");
+
+    public static readonly Error AlreadyExists = new(
+        $"{nameof(Site)}.{nameof(AlreadyExists)}",
+        "A site with this plant code already exists");
 }
