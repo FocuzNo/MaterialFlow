@@ -41,7 +41,7 @@ internal sealed class CreateMaterialCommandValidator : AbstractValidator<CreateM
         RuleFor(x => x.SafetyStockAmount)
             .GreaterThanOrEqualTo(0)
             .WithMessage("Safety stock amount must be non-negative.")
-            .PrecisionScale(18, 3, true)
+            .PrecisionScale(21, 3, true)
             .WithMessage("Safety stock amount must have precision 18 and scale 3.");
 
         RuleFor(x => x.SafetyStockUnitOfMeasure)
