@@ -17,6 +17,7 @@ internal sealed class Create : IEndpoint
                 ApiResults.Problem
             );
         })
-        .WithTags(Tags.Sites);
+        .WithTags(Tags.Sites)
+        .RequireAuthorization();
     }
 }

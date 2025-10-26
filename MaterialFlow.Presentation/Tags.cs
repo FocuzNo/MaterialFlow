@@ -17,4 +17,5 @@ internal static class Tags
     internal const string PurchaseRequests = nameof(PurchaseRequests);
     internal const string SalesOrderDemands = nameof(SalesOrderDemands);
     internal const string Sites = nameof(Sites);
+    internal const string Users = nameof(Users);
 }
