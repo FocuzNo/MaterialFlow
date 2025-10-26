@@ -13,6 +13,13 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddEndpoints(typeof(IEndpoint).Assembly);
 
+builder.Services.AddAuthorization();
+
+builder.Services.AddOpenApi(options =>
+{
+    options.AddDocumentTransformer<OpenApiAuthTransformer>();
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -27,6 +34,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapEndpoints();
 
 app.Run();

@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   materialflow.api:
     image: ${DOCKER_REGISTRY-}materialflowapi
@@ -5,8 +7,16 @@ services:
     build:
       context: .
       dockerfile: MaterialFlow.Api/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    networks:
+      - materialflow-network
     depends_on:
       - materialflow-db
+      - materialflow-idp
+      - materialflow-cache
+    ports:
+      - "8080:8080"
 
   materialflow-db:
     image: postgres:latest
@@ -15,10 +25,43 @@ services:
       - POSTGRES_DB=materialflow
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+    networks:
+      - materialflow-network
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:
       - "5433:5432"
 
+  materialflow-idp:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: MaterialFlow.Identity
+    command: start-dev --import-realm
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - ./.containers/identity:/opt/keycloak/data
+      - ./.files/material-flow-realm-export.json:/opt/keycloak/data/import/realm.json
+    networks:
+      - materialflow-network
+    ports:
+      - "18080:8080"
+
+  materialflow-cache:
+    image: redis:7.2
+    container_name: materialflow-cache
+    command: redis-server --save 20 1 --loglevel warning
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - materialflow-network
+
+networks:
+  materialflow-network:
+    driver: bridge
+
 volumes:
   postgres-data:
+  redis-data:

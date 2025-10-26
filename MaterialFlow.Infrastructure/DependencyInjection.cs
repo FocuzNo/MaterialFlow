@@ -1,22 +1,18 @@
-﻿using MaterialFlow.Domain.Abstractions;
-using MaterialFlow.Domain.ComponentReservations;
-using MaterialFlow.Domain.ForecastPlanItems;
-using MaterialFlow.Domain.ForecastPlans;
-using MaterialFlow.Domain.InventoryBalances;
-using MaterialFlow.Domain.Materials;
-using MaterialFlow.Domain.PlannedProductionOrders;
-using MaterialFlow.Domain.PlanningAreas;
-using MaterialFlow.Domain.PlanningRunLines;
-using MaterialFlow.Domain.PlanningRuns;
-using MaterialFlow.Domain.ProductComponents;
-using MaterialFlow.Domain.ProductionOrders;
-using MaterialFlow.Domain.ProductStructures;
-using MaterialFlow.Domain.PurchaseRequests;
-using MaterialFlow.Domain.SalesOrderDemands;
-using MaterialFlow.Domain.Sites;
-using MaterialFlow.Infrastructure.Repositories;
+﻿using MaterialFlow.Application.Abstractions.Authentication;
+using MaterialFlow.Application.Abstractions.Caching;
+using MaterialFlow.Domain.Abstractions;
+using MaterialFlow.Infrastructure.Authentication;
+using MaterialFlow.Infrastructure.Authorization;
+using MaterialFlow.Infrastructure.Caching;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using AuthenticationOptions = MaterialFlow.Infrastructure.Authentication.AuthenticationOptions;
+using AuthenticationService = MaterialFlow.Infrastructure.Authentication.AuthenticationService;
+using IAuthenticationService = MaterialFlow.Application.Abstractions.Authentication.IAuthenticationService;
 
 namespace MaterialFlow.Infrastructure;
 
@@ -26,48 +22,96 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        string connectionString = configuration
-            .GetConnectionString("Database") ??
-            throw new ArgumentNullException(nameof(configuration));
+        services
+            .AddPersistence(configuration)
+            .AddCaching(configuration)
+            .AddAuthentication(configuration)
+            .AddAuthorization();
 
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(connectionString)
-            .UseSnakeCaseNamingConvention());
+        return services;
+    }
 
-        services.AddScoped<IMaterialRepository, MaterialRepository>();
+    private static IServiceCollection AddPersistence(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var connectionString = configuration.GetConnectionString("Database")
+            ?? throw new ArgumentNullException(nameof(configuration));
 
-        services.AddScoped<IForecastPlanRepository, ForecastPlanRepository>();
+        services.AddDbContext<ApplicationDbContext>(opts =>
+            opts.UseNpgsql(connectionString)
+                .UseSnakeCaseNamingConvention());
 
-        services.AddScoped<IForecastPlanItemRepository, ForecastPlanItemRepository>();
-
-        services.AddScoped<IComponentReservationRepository, ComponentReservationRepository>();
-
-        services.AddScoped<IInventoryBalanceRepository, InventoryBalanceRepository>();
-
-        services.AddScoped<IPlannedProductionOrderRepository, PlannedProductionOrderRepository>();
-
-        services.AddScoped<ISiteRepository, SiteRepository>();
-
-        services.AddScoped<ISalesOrderDemandRepository, SalesOrderDemandRepository>();
-
-        services.AddScoped<IPurchaseRequestRepository, PurchaseRequestRepository>();
-
-        services.AddScoped<IProductStructureRepository, ProductStructureRepository>();
-
-        services.AddScoped<IProductionOrderRepository, ProductionOrderRepository>();
-
-        services.AddScoped<IProductComponentRepository, ProductComponentRepository>();
-
-        services.AddScoped<IPlanningRunRepository, PlanningRunRepository>();
-
-        services.AddScoped<IPlanningRunLineRepository, PlanningRunLineRepository>();
-
-        services.AddScoped<IPlanningAreaRepository, PlanningAreaRepository>();
+        services.Scan(scan => scan
+            .FromAssemblyOf<ApplicationDbContext>()
+            .AddClasses(c => c.Where(t => t.Name.EndsWith("Repository")), publicOnly: false)
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
 
         services.AddMediatR(cfg =>
-                cfg.RegisterServicesFromAssemblies(typeof(ApplicationDbContext).Assembly));
+            cfg.RegisterServicesFromAssemblies(typeof(ApplicationDbContext).Assembly));
 
-        services.AddScoped<IUnitOfWork>(x => x.GetRequiredService<ApplicationDbContext>());
+        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
+
+        return services;
+    }
+
+    private static IServiceCollection AddCaching(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var cacheConnection = configuration.GetConnectionString("Cache")
+            ?? throw new ArgumentNullException(nameof(configuration));
+
+        services.AddStackExchangeRedisCache(opts => opts.Configuration = cacheConnection);
+        services.AddSingleton<ICacheService, CacheService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddAuthentication(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(opts =>
+            {
+                opts.Authority = "http://materialflow-idp:8080/realms/materialflow";
+                opts.Audience = "materialflow-api";
+                opts.RequireHttpsMetadata = false;
+            });
+
+        services.Configure<AuthenticationOptions>(configuration.GetSection("Authentication"));
+        services.Configure<KeycloakOptions>(configuration.GetSection("Keycloak"));
+
+        services.AddTransient<AdminAuthorizationDelegatingHandler>();
+
+        services.AddHttpClient<IAuthenticationService, AuthenticationService>(static (sp, client) =>
+        {
+            var opts = sp.GetRequiredService<IOptions<KeycloakOptions>>().Value;
+            client.BaseAddress = new Uri(opts.AdminUrl);
+        }).AddHttpMessageHandler<AdminAuthorizationDelegatingHandler>();
+
+        services.AddHttpClient<IJwtService, JwtService>(static (sp, client) =>
+        {
+            var opts = sp.GetRequiredService<IOptions<KeycloakOptions>>().Value;
+            client.BaseAddress = new Uri(opts.TokenUrl);
+        });
+
+        services.AddHttpContextAccessor();
+        services.AddScoped<IUserContext, UserContext>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddAuthorization(this IServiceCollection services)
+    {
+        services
+            .AddScoped<AuthorizationService>()
+            .AddTransient<IClaimsTransformation, CustomClaimsTransformation>()
+            .AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>()
+            .AddTransient<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
 
         return services;
     }

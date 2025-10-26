@@ -3,6 +3,7 @@ using System;
 using MaterialFlow.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MaterialFlow.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251025175949_AddUser")]
+    partial class AddUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -687,38 +690,48 @@ namespace MaterialFlow.Infrastructure.Migrations
             modelBuilder.Entity("MaterialFlow.Domain.Users.Permission", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasColumnName("id");
 
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("character varying(150)")
+                        .HasColumnType("text")
                         .HasColumnName("name");
+
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("role_id");
 
                     b.HasKey("Id")
                         .HasName("pk_permission");
 
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_permission_role_id");
+
                     b.ToTable("permission", (string)null);
                 });
 
-            modelBuilder.Entity("MaterialFlow.Domain.Users.RolePermission", b =>
+            modelBuilder.Entity("MaterialFlow.Domain.Users.Role", b =>
                 {
-                    b.Property<int>("RoleId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
-                        .HasColumnName("role_id");
+                        .HasColumnName("id");
 
-                    b.Property<int>("PermissionId")
-                        .HasColumnType("integer")
-                        .HasColumnName("permission_id");
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.HasKey("RoleId", "PermissionId")
-                        .HasName("pk_role_permission");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
 
-                    b.HasIndex("PermissionId")
-                        .HasDatabaseName("ix_role_permission_permission_id");
+                    b.HasKey("Id")
+                        .HasName("pk_role");
 
-                    b.ToTable("role_permission", (string)null);
+                    b.ToTable("role", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.Users.User", b =>
@@ -751,27 +764,6 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasDatabaseName("ix_user_identity_id");
 
                     b.ToTable("user", (string)null);
-                });
-
-            modelBuilder.Entity("Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_role");
-
-                    b.ToTable("role", (string)null);
                 });
 
             modelBuilder.Entity("RoleUser", b =>
@@ -1917,21 +1909,12 @@ namespace MaterialFlow.Infrastructure.Migrations
                     b.Navigation("Site");
                 });
 
-            modelBuilder.Entity("MaterialFlow.Domain.Users.RolePermission", b =>
+            modelBuilder.Entity("MaterialFlow.Domain.Users.Permission", b =>
                 {
-                    b.HasOne("MaterialFlow.Domain.Users.Permission", null)
-                        .WithMany()
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_role_permission_permission_permission_id");
-
-                    b.HasOne("Role", null)
-                        .WithMany()
+                    b.HasOne("MaterialFlow.Domain.Users.Role", null)
+                        .WithMany("Permissions")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_role_permission_role_role_id");
+                        .HasConstraintName("fk_permission_role_role_id");
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.Users.User", b =>
@@ -2011,7 +1994,7 @@ namespace MaterialFlow.Infrastructure.Migrations
 
             modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.HasOne("Role", null)
+                    b.HasOne("MaterialFlow.Domain.Users.Role", null)
                         .WithMany()
                         .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -2039,6 +2022,11 @@ namespace MaterialFlow.Infrastructure.Migrations
             modelBuilder.Entity("MaterialFlow.Domain.ProductStructures.ProductStructure", b =>
                 {
                     b.Navigation("Components");
+                });
+
+            modelBuilder.Entity("MaterialFlow.Domain.Users.Role", b =>
+                {
+                    b.Navigation("Permissions");
                 });
 #pragma warning restore 612, 618
         }
