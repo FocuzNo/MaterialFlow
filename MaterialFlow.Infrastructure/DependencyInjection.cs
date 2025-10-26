@@ -1,21 +1,6 @@
 ﻿using MaterialFlow.Application.Abstractions.Authentication;
 using MaterialFlow.Application.Abstractions.Caching;
 using MaterialFlow.Domain.Abstractions;
-using MaterialFlow.Domain.ComponentReservations;
-using MaterialFlow.Domain.ForecastPlanItems;
-using MaterialFlow.Domain.ForecastPlans;
-using MaterialFlow.Domain.InventoryBalances;
-using MaterialFlow.Domain.Materials;
-using MaterialFlow.Domain.PlannedProductionOrders;
-using MaterialFlow.Domain.PlanningAreas;
-using MaterialFlow.Domain.PlanningRunLines;
-using MaterialFlow.Domain.PlanningRuns;
-using MaterialFlow.Domain.ProductComponents;
-using MaterialFlow.Domain.ProductionOrders;
-using MaterialFlow.Domain.ProductStructures;
-using MaterialFlow.Domain.PurchaseRequests;
-using MaterialFlow.Domain.SalesOrderDemands;
-using MaterialFlow.Domain.Sites;
 using MaterialFlow.Domain.Users;
 using MaterialFlow.Infrastructure.Authentication;
 using MaterialFlow.Infrastructure.Authorization;
@@ -24,6 +9,7 @@ using MaterialFlow.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -39,106 +25,97 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        AddPersistence(services, configuration);
-
-        AddCaching(services, configuration);
-
-        AddAuthentication(services, configuration);
-
-        AddAuthorization(services);
+        services
+            .AddPersistence(configuration)
+            .AddCaching(configuration)
+            .AddAuthentication(configuration)
+            .AddAuthorization();
 
         return services;
     }
 
-    private static void AddPersistence(
-        IServiceCollection services,
+    private static IServiceCollection AddPersistence(
+        this IServiceCollection services,
         IConfiguration configuration)
     {
-        string connectionString = configuration.GetConnectionString("Database")
+        var connectionString = configuration.GetConnectionString("Database")
             ?? throw new ArgumentNullException(nameof(configuration));
 
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseNpgsql(connectionString)
-                   .UseSnakeCaseNamingConvention());
+        services.AddDbContext<ApplicationDbContext>(opts =>
+            opts.UseNpgsql(connectionString)
+                .UseSnakeCaseNamingConvention());
 
-        services.AddScoped<IMaterialRepository, MaterialRepository>();
-        services.AddScoped<IForecastPlanRepository, ForecastPlanRepository>();
-        services.AddScoped<IForecastPlanItemRepository, ForecastPlanItemRepository>();
-        services.AddScoped<IComponentReservationRepository, ComponentReservationRepository>();
-        services.AddScoped<IInventoryBalanceRepository, InventoryBalanceRepository>();
-        services.AddScoped<IPlannedProductionOrderRepository, PlannedProductionOrderRepository>();
-        services.AddScoped<ISiteRepository, SiteRepository>();
-        services.AddScoped<ISalesOrderDemandRepository, SalesOrderDemandRepository>();
-        services.AddScoped<IPurchaseRequestRepository, PurchaseRequestRepository>();
-        services.AddScoped<IProductStructureRepository, ProductStructureRepository>();
-        services.AddScoped<IProductionOrderRepository, ProductionOrderRepository>();
-        services.AddScoped<IProductComponentRepository, ProductComponentRepository>();
-        services.AddScoped<IPlanningRunRepository, PlanningRunRepository>();
-        services.AddScoped<IPlanningRunLineRepository, PlanningRunLineRepository>();
-        services.AddScoped<IPlanningAreaRepository, PlanningAreaRepository>();
-        services.AddScoped<IUserRepository, UserRepository>();
+        services.Scan(scan => scan
+            .FromAssemblyOf<ApplicationDbContext>()
+            .AddClasses(c => c.Where(t => t.Name.EndsWith("Repository")), publicOnly: false)
+            .AsImplementedInterfaces()
+            .WithScopedLifetime());
 
         services.AddMediatR(cfg =>
             cfg.RegisterServicesFromAssemblies(typeof(ApplicationDbContext).Assembly));
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
+
+        return services;
     }
 
-    private static void AddAuthentication(IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddCaching(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var cacheConnection = configuration.GetConnectionString("Cache")
+            ?? throw new ArgumentNullException(nameof(configuration));
+
+        services.AddStackExchangeRedisCache(opts => opts.Configuration = cacheConnection);
+        services.AddSingleton<ICacheService, CacheService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddAuthentication(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
+            .AddJwtBearer(opts =>
             {
-                options.Authority = "http://materialflow-idp:8080/realms/materialflow";
-                options.Audience = "materialflow-api";
-                options.RequireHttpsMetadata = false;
+                opts.Authority = "http://materialflow-idp:8080/realms/materialflow";
+                opts.Audience = "materialflow-api";
+                opts.RequireHttpsMetadata = false;
             });
 
         services.Configure<AuthenticationOptions>(configuration.GetSection("Authentication"));
-
         services.Configure<KeycloakOptions>(configuration.GetSection("Keycloak"));
 
         services.AddTransient<AdminAuthorizationDelegatingHandler>();
 
-        services.AddHttpClient<IAuthenticationService, AuthenticationService>((serviceProvider, httpClient) =>
+        services.AddHttpClient<IAuthenticationService, AuthenticationService>(static (sp, client) =>
         {
-            KeycloakOptions keycloakOptions = serviceProvider.GetRequiredService<IOptions<KeycloakOptions>>().Value;
+            var opts = sp.GetRequiredService<IOptions<KeycloakOptions>>().Value;
+            client.BaseAddress = new Uri(opts.AdminUrl);
+        }).AddHttpMessageHandler<AdminAuthorizationDelegatingHandler>();
 
-            httpClient.BaseAddress = new Uri(keycloakOptions.AdminUrl);
-        })
-        .AddHttpMessageHandler<AdminAuthorizationDelegatingHandler>();
-
-        services.AddHttpClient<IJwtService, JwtService>((serviceProvider, httpClient) =>
+        services.AddHttpClient<IJwtService, JwtService>(static (sp, client) =>
         {
-            KeycloakOptions keycloakOptions = serviceProvider.GetRequiredService<IOptions<KeycloakOptions>>().Value;
-
-            httpClient.BaseAddress = new Uri(keycloakOptions.TokenUrl);
+            var opts = sp.GetRequiredService<IOptions<KeycloakOptions>>().Value;
+            client.BaseAddress = new Uri(opts.TokenUrl);
         });
 
         services.AddHttpContextAccessor();
-
         services.AddScoped<IUserContext, UserContext>();
+
+        return services;
     }
 
-    private static void AddAuthorization(IServiceCollection services)
+    private static IServiceCollection AddAuthorization(this IServiceCollection services)
     {
-        services.AddScoped<AuthorizationService>();
+        services
+            .AddScoped<AuthorizationService>()
+            .AddTransient<IClaimsTransformation, CustomClaimsTransformation>()
+            .AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>()
+            .AddTransient<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
 
-        services.AddTransient<IClaimsTransformation, CustomClaimsTransformation>();
-
-        services.AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>();
-
-        services.AddTransient<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
-    }
-
-    private static void AddCaching(IServiceCollection services, IConfiguration configuration)
-    {
-        string connectionString = configuration.GetConnectionString("Cache") ??
-            throw new ArgumentNullException(nameof(configuration));
-
-        services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
-
-        services.AddSingleton<ICacheService, CacheService>();
+        return services;
     }
 }

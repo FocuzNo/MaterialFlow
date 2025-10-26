@@ -6,23 +6,25 @@ namespace MaterialFlow.Infrastructure.Authorization;
 internal sealed class PermissionAuthorizationPolicyProvider(IOptions<AuthorizationOptions> options)
     : DefaultAuthorizationPolicyProvider(options)
 {
-    private readonly AuthorizationOptions _authorizationOptions = options.Value;
+    private readonly AuthorizationOptions _options = options.Value;
 
     public override async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
     {
-        AuthorizationPolicy? policy = await base.GetPolicyAsync(policyName);
+        var existingPolicy = await base.GetPolicyAsync(policyName);
 
-        if (policy is not null)
+        if (existingPolicy is not null)
         {
-            return policy;
+            return existingPolicy;
         }
 
-        AuthorizationPolicy permissionPolicy = new AuthorizationPolicyBuilder()
+        var newPolicy = new AuthorizationPolicyBuilder()
             .AddRequirements(new PermissionRequirement(policyName))
             .Build();
 
-        _authorizationOptions.AddPolicy(policyName, permissionPolicy);
+        _options.AddPolicy(
+            policyName,
+            newPolicy);
 
-        return permissionPolicy;
+        return newPolicy;
     }
 }

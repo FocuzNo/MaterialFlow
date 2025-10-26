@@ -4,13 +4,15 @@ namespace MaterialFlow.Infrastructure.Caching;
 
 public static class CacheOptions
 {
+    private static readonly TimeSpan DefaultTtl = TimeSpan.FromMinutes(1);
+
     public static DistributedCacheEntryOptions DefaultExpiration => new()
     {
-        AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1)
+        AbsoluteExpirationRelativeToNow = DefaultTtl
     };
 
     public static DistributedCacheEntryOptions Create(TimeSpan? expiration) =>
-        expiration is not null ?
-            new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = expiration } :
-            DefaultExpiration;
+        expiration is null
+            ? DefaultExpiration
+            : new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = expiration };
 }

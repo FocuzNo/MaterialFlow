@@ -6,16 +6,13 @@ using System.Net.Http.Json;
 
 namespace MaterialFlow.Infrastructure.Authentication;
 
-internal sealed class JwtService(
-    HttpClient httpClient,
-    IOptions<KeycloakOptions> keycloakOptions) : IJwtService
+internal sealed class JwtService(HttpClient http, IOptions<KeycloakOptions> options) : IJwtService
 {
-    private static readonly Error AuthenticationFailed = new(
+    private static readonly Error AuthFailed = new(
         "Keycloak.AuthenticationFailed",
-        "Failed to acquire access token do to authentication failure");
+        "Failed to acquire access token due to authentication failure");
 
-    private readonly HttpClient _httpClient = httpClient;
-    private readonly KeycloakOptions _keycloakOptions = keycloakOptions.Value;
+    private readonly KeycloakOptions _opts = options.Value;
 
     public async Task<Result<string>> GetAccessTokenAsync(
         string email,
@@ -24,39 +21,34 @@ internal sealed class JwtService(
     {
         try
         {
-            var authRequestParameters = new KeyValuePair<string, string>[]
+            var parameters = new[]
             {
-                new("client_id", _keycloakOptions.AuthClientId),
-                new("client_secret", _keycloakOptions.AuthClientSecret),
-                new("scope", "openid email"),
-                new("grant_type", "password"),
-                new("username", email),
-                new("password", password)
+                new KeyValuePair<string, string>("client_id", _opts.AuthClientId),
+                new KeyValuePair<string, string>("client_secret", _opts.AuthClientSecret),
+                new KeyValuePair<string, string>("scope", "openid email"),
+                new KeyValuePair<string, string>("grant_type", "password"),
+                new KeyValuePair<string, string>("username", email),
+                new KeyValuePair<string, string>("password", password)
             };
 
-            using var authorizationRequestContent = new FormUrlEncodedContent(authRequestParameters);
+            using var content = new FormUrlEncodedContent(parameters);
 
-            HttpResponseMessage response = await _httpClient.PostAsync(
+            var result = await http.PostAsync(
                 string.Empty,
-                authorizationRequestContent,
+                content,
                 cancellationToken);
 
-            response.EnsureSuccessStatusCode();
+            result.EnsureSuccessStatusCode();
 
-            AuthorizationToken? authorizationToken = await response
-                .Content
-                .ReadFromJsonAsync<AuthorizationToken>(cancellationToken);
+            var token = await result.Content.ReadFromJsonAsync<AuthorizationToken>(cancellationToken);
 
-            if (authorizationToken is null)
-            {
-                return Result.Failure<string>(AuthenticationFailed);
-            }
-
-            return authorizationToken.AccessToken;
+            return token is not null
+                ? token.AccessToken
+                : Result.Failure<string>(AuthFailed);
         }
         catch (HttpRequestException)
         {
-            return Result.Failure<string>(AuthenticationFailed);
+            return Result.Failure<string>(AuthFailed);
         }
     }
 }

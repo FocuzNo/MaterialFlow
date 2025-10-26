@@ -1,30 +1,30 @@
 ﻿namespace MaterialFlow.Infrastructure.Authentication.Models;
 
-internal class CredentialRepresentationModel
+internal sealed class CredentialRepresentationModel
 {
-    public string Algorithm { get; set; }
+    public string Algorithm { get; init; }
 
-    public string Config { get; set; }
+    public string Config { get; init; }
 
-    public int Counter { get; set; }
+    public int Counter { get; init; }
 
-    public long CreatedDate { get; set; }
+    public long CreatedDate { get; init; }
 
-    public string Device { get; set; }
+    public string Device { get; init; }
 
-    public int Digits { get; set; }
+    public int Digits { get; init; }
 
-    public int HashIterations { get; set; }
+    public int HashIterations { get; init; }
 
-    public string HashedSaltedValue { get; set; }
+    public string HashedSaltedValue { get; init; }
 
-    public int Period { get; set; }
+    public int Period { get; init; }
 
-    public string Salt { get; set; }
+    public string Salt { get; init; }
 
-    public bool Temporary { get; set; }
+    public bool Temporary { get; init; }
 
-    public string Type { get; set; }
+    public string Type { get; init; }
 
-    public string Value { get; set; }
+    public string Value { get; init; }
 }

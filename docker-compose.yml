@@ -14,6 +14,7 @@ services:
     depends_on:
       - materialflow-db
       - materialflow-idp
+      - materialflow-cache
     ports:
       - "8080:8080"
 
@@ -46,9 +47,21 @@ services:
     ports:
       - "18080:8080"
 
+  materialflow-cache:
+    image: redis:7.2
+    container_name: materialflow-cache
+    command: redis-server --save 20 1 --loglevel warning
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - materialflow-network
+
 networks:
   materialflow-network:
     driver: bridge
 
 volumes:
   postgres-data:
+  redis-data:

@@ -2,52 +2,53 @@
 
 namespace MaterialFlow.Infrastructure.Authentication.Models;
 
-internal sealed class UserRepresentationModel
+internal sealed record class UserRepresentationModel
 {
-    public Dictionary<string, string> Access { get; set; }
+    public Dictionary<string, string> Access { get; init; }
 
-    public Dictionary<string, List<string>> Attributes { get; set; }
+    public Dictionary<string, List<string>> Attributes { get; init; }
 
-    public Dictionary<string, string> ClientRoles { get; set; }
+    public Dictionary<string, string> ClientRoles { get; init; }
 
-    public long? CreatedTimestamp { get; set; }
+    public long? CreatedTimestamp { get; init; }
 
-    public CredentialRepresentationModel[] Credentials { get; set; }
+    public CredentialRepresentationModel[] Credentials { get; init; }
 
-    public string[] DisableableCredentialTypes { get; set; }
+    public string[] DisableableCredentialTypes { get; init; }
 
-    public string Email { get; set; }
+    public string Email { get; init; }
 
-    public bool? EmailVerified { get; set; }
+    public bool? EmailVerified { get; init; }
 
-    public bool? Enabled { get; set; }
+    public bool? Enabled { get; init; }
 
-    public string FederationLink { get; set; }
+    public string FederationLink { get; init; }
 
-    public string Id { get; set; }
+    public string Id { get; init; }
 
-    public string[] Groups { get; set; }
+    public string[] Groups { get; init; }
 
-    public string FirstName { get; set; }
+    public string FirstName { get; init; }
 
-    public string LastName { get; set; }
+    public string LastName { get; init; }
 
-    public int? NotBefore { get; set; }
+    public int? NotBefore { get; init; }
 
-    public string Origin { get; set; }
+    public string Origin { get; init; }
 
-    public string[] RealmRoles { get; set; }
+    public string[] RealmRoles { get; init; }
 
-    public string[] RequiredActions { get; set; }
+    public string[] RequiredActions { get; init; }
 
-    public string Self { get; set; }
+    public string Self { get; init; }
 
-    public string ServiceAccountClientId { get; set; }
+    public string ServiceAccountClientId { get; init; }
 
-    public string Username { get; set; }
+    public string Username { get; init; }
 
-    internal static UserRepresentationModel FromUser(User user) =>
-        new()
+    internal static UserRepresentationModel FromUser(User user)
+    {
+        return new()
         {
             FirstName = user.FirstName.Value,
             LastName = user.LastName.Value,
@@ -59,4 +60,5 @@ internal sealed class UserRepresentationModel
             Attributes = [],
             RequiredActions = []
         };
+    }
 }

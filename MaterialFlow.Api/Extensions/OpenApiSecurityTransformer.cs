@@ -5,45 +5,66 @@ namespace MaterialFlow.Api.Extensions;
 
 internal sealed class OpenApiAuthTransformer : IOpenApiDocumentTransformer
 {
-    public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
+    private const string BearerScheme = "Bearer";
+    private const string JwtBearerFormat = "JWT";
+    private const string SecurityDescription = "JWT Bearer token authentication. Enter your token in the format: Bearer {your_token}";
+
+    public Task TransformAsync(
+        OpenApiDocument document,
+        OpenApiDocumentTransformerContext context,
+        CancellationToken cancellationToken)
+    {
+        AddSecurityScheme(document);
+        ApplySecurityRequirementToAllOperations(document);
+
+        return Task.CompletedTask;
+    }
+
+    private static void AddSecurityScheme(OpenApiDocument document)
     {
         document.Components ??= new OpenApiComponents();
 
-        // Добавляем схему безопасности Bearer
-        document.Components.SecuritySchemes["Bearer"] = new OpenApiSecurityScheme
+        document.Components.SecuritySchemes[BearerScheme] = new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.Http,
-            Scheme = "bearer",
-            BearerFormat = "JWT",
-            Description = "JWT Bearer токен (пример: `Bearer eyJhbGciOi...`)"
+            Scheme = BearerScheme.ToLowerInvariant(),
+            BearerFormat = JwtBearerFormat,
+            Description = SecurityDescription
         };
+    }
 
-        if (document.Paths is not null)
+    private static void ApplySecurityRequirementToAllOperations(OpenApiDocument document)
+    {
+        if (document.Paths is null)
         {
-            foreach (var path in document.Paths.Values)
-            {
-                foreach (var operation in path.Operations.Values)
-                {
-                    operation.Security ??= new List<OpenApiSecurityRequirement>();
-
-                    operation.Security.Add(new OpenApiSecurityRequirement
-                    {
-                        {
-                            new OpenApiSecurityScheme
-                            {
-                                Reference = new OpenApiReference
-                                {
-                                    Type = ReferenceType.SecurityScheme,
-                                    Id = "Bearer"
-                                }
-                            },
-                            Array.Empty<string>()
-                        }
-                    });
-                }
-            }
+            return;
         }
 
-        return Task.CompletedTask;
+        foreach (OpenApiPathItem path in document.Paths.Values)
+        {
+            foreach (OpenApiOperation operation in path.Operations.Values)
+            {
+                operation.Security ??= [];
+
+                operation.Security.Add(CreateBearerSecurityRequirement());
+            }
+        }
+    }
+
+    private static OpenApiSecurityRequirement CreateBearerSecurityRequirement()
+    {
+        var securityScheme = new OpenApiSecurityScheme
+        {
+            Reference = new OpenApiReference
+            {
+                Type = ReferenceType.SecurityScheme,
+                Id = BearerScheme
+            }
+        };
+
+        return new OpenApiSecurityRequirement
+        {
+            [securityScheme] = []
+        };
     }
 }

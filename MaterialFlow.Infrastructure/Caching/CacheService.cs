@@ -11,7 +11,7 @@ internal sealed class CacheService(IDistributedCache cache) : ICacheService
         string key,
         CancellationToken cancellationToken = default)
     {
-        byte[]? bytes = await cache.GetAsync(
+        var bytes = await cache.GetAsync(
             key,
             cancellationToken);
 
@@ -24,20 +24,22 @@ internal sealed class CacheService(IDistributedCache cache) : ICacheService
         TimeSpan? expiration = null,
         CancellationToken cancellationToken = default)
     {
-        byte[] bytes = Serialize(value);
+        var bytes = Serialize(value);
 
-        return cache.SetAsync(key, bytes, CacheOptions.Create(expiration), cancellationToken);
+        return cache.SetAsync(
+            key,
+            bytes,
+            CacheOptions.Create(expiration),
+            cancellationToken);
     }
 
-    public Task RemoveAsync(
-        string key,
-        CancellationToken cancellationToken = default) =>
-        cache.RemoveAsync(key, cancellationToken);
+    public Task RemoveAsync(string key, CancellationToken cancellationToken = default) =>
+        cache.RemoveAsync(
+            key,
+            cancellationToken);
 
-    private static T Deserialize<T>(byte[] bytes)
-    {
-        return JsonSerializer.Deserialize<T>(bytes)!;
-    }
+    private static T Deserialize<T>(byte[] bytes) =>
+        JsonSerializer.Deserialize<T>(bytes)!;
 
     private static byte[] Serialize<T>(T value)
     {
@@ -45,7 +47,9 @@ internal sealed class CacheService(IDistributedCache cache) : ICacheService
 
         using var writer = new Utf8JsonWriter(buffer);
 
-        JsonSerializer.Serialize(writer, value);
+        JsonSerializer.Serialize(
+            writer,
+            value);
 
         return buffer.WrittenSpan.ToArray();
     }

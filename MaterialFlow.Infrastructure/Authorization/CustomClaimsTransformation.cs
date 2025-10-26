@@ -1,5 +1,4 @@
-﻿using MaterialFlow.Domain.Users;
-using MaterialFlow.Infrastructure.Authentication;
+﻿using MaterialFlow.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,7 +20,9 @@ internal sealed class CustomClaimsTransformation(IServiceProvider serviceProvide
 
         using IServiceScope scope = serviceProvider.CreateScope();
 
-        AuthorizationService authorizationService = scope.ServiceProvider.GetRequiredService<AuthorizationService>();
+        var authorizationService = scope
+            .ServiceProvider
+            .GetRequiredService<AuthorizationService>();
 
         string identityId = principal.GetIdentityId();
 
@@ -29,11 +30,17 @@ internal sealed class CustomClaimsTransformation(IServiceProvider serviceProvide
 
         var claimsIdentity = new ClaimsIdentity();
 
-        claimsIdentity.AddClaim(new Claim(JwtRegisteredClaimNames.Sub, userRoles.UserId.ToString()));
+        claimsIdentity
+            .AddClaim(new Claim(
+                JwtRegisteredClaimNames.Sub,
+                userRoles.UserId.ToString()));
 
         foreach (Role role in userRoles.Roles)
         {
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, role.Name));
+            claimsIdentity
+                .AddClaim(new Claim(
+                    ClaimTypes.Role,
+                    role.Name));
         }
 
         principal.AddIdentity(claimsIdentity);

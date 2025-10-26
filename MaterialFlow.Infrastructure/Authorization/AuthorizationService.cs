@@ -5,52 +5,54 @@ namespace MaterialFlow.Infrastructure.Authorization;
 
 internal sealed class AuthorizationService(
     ApplicationDbContext dbContext,
-    ICacheService cacheService)
+    ICacheService cache)
 {
     public async Task<UserRolesResponse> GetRolesForUserAsync(string identityId)
     {
-        string cacheKey = $"auth:roles-{identityId}";
+        var cacheKey = $"auth:roles:{identityId}";
 
-        UserRolesResponse? cachedRoles = await cacheService.GetAsync<UserRolesResponse>(cacheKey);
-
-        if (cachedRoles is not null)
+        if (await cache.GetAsync<UserRolesResponse>(cacheKey) is { } cachedRoles)
         {
             return cachedRoles;
         }
 
-        UserRolesResponse roles = await dbContext.Set<User>()
+        var userRoles = await dbContext.Set<User>()
             .Where(u => u.IdentityId == identityId)
             .Select(u => new UserRolesResponse
             {
                 UserId = u.Id,
                 Roles = u.Roles.ToList()
             })
+            .AsNoTracking()
             .FirstAsync();
 
-        await cacheService.SetAsync(cacheKey, roles);
+        await cache.SetAsync(
+            cacheKey,
+            userRoles);
 
-        return roles;
+        return userRoles;
     }
 
     public async Task<HashSet<string>> GetPermissionsForUserAsync(string identityId)
     {
-        string cacheKey = $"auth:permissions-{identityId}";
-        HashSet<string>? cachedPermissions = await cacheService.GetAsync<HashSet<string>>(cacheKey);
+        var cacheKey = $"auth:permissions:{identityId}";
 
-        if (cachedPermissions is not null)
+        if (await cache.GetAsync<HashSet<string>>(cacheKey) is { } cachedPermissions)
         {
             return cachedPermissions;
         }
 
-        ICollection<Permission> permissions = await dbContext.Set<User>()
+        var permissions = await dbContext.Set<User>()
             .Where(u => u.IdentityId == identityId)
-            .SelectMany(u => u.Roles.Select(r => r.Permissions))
-            .FirstAsync();
+            .SelectMany(u => u.Roles.SelectMany(r => r.Permissions))
+            .Select(p => p.Name)
+            .AsNoTracking()
+            .ToHashSetAsync();
 
-        var permissionsSet = permissions.Select(p => p.Name).ToHashSet();
+        await cache.SetAsync(
+            cacheKey,
+            permissions);
 
-        await cacheService.SetAsync(cacheKey, permissionsSet);
-
-        return permissionsSet;
+        return permissions;
     }
 }

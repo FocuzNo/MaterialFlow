@@ -5,55 +5,40 @@ using System.Net.Http.Json;
 
 namespace MaterialFlow.Infrastructure.Authentication;
 
-internal sealed class AuthenticationService(HttpClient httpClient) : IAuthenticationService
+internal sealed class AuthenticationService(HttpClient http) : IAuthenticationService
 {
     private const string PasswordCredentialType = "password";
-
-    private readonly HttpClient _httpClient = httpClient;
 
     public async Task<string> RegisterAsync(
         User user,
         string password,
         CancellationToken cancellationToken = default)
     {
-        var userRepresentationModel = UserRepresentationModel.FromUser(user);
-
-        userRepresentationModel.Credentials =
-        [
-        new()
+        var model = UserRepresentationModel.FromUser(user) with
         {
-            Value = password,
-            Temporary = false,
-            Type = PasswordCredentialType
-        }
-        ];
+            Credentials =
+            [
+                new()
+                {
+                    Value = password,
+                    Temporary = false,
+                    Type = PasswordCredentialType
+                }
+            ]
+        };
 
-        HttpResponseMessage response = await _httpClient.PostAsJsonAsync(
-            "users",
-            userRepresentationModel,
-            cancellationToken);
-
-        return ExtractIdentityIdFromLocationHeader(response);
+        var response = await http.PostAsJsonAsync("users", model, cancellationToken);
+        return ExtractIdentityId(response);
     }
 
-    private static string ExtractIdentityIdFromLocationHeader(HttpResponseMessage httpResponseMessage)
+    private static string ExtractIdentityId(HttpResponseMessage response)
     {
-        const string usersSegmentName = "users/";
+        const string segment = "users/";
 
-        string? locationHeader = httpResponseMessage.Headers.Location?.PathAndQuery;
+        string? path = response.Headers.Location?.PathAndQuery
+            ?? throw new InvalidOperationException("Location header can't be null");
 
-        if (locationHeader is null)
-        {
-            throw new InvalidOperationException("Location header can't be null");
-        }
-
-        int userSegmentValueIndex = locationHeader.IndexOf(
-            usersSegmentName,
-            StringComparison.InvariantCultureIgnoreCase);
-
-        string userIdentityId = locationHeader[
-            (userSegmentValueIndex + usersSegmentName.Length)..];
-
-        return userIdentityId;
+        int idx = path.IndexOf(segment, StringComparison.InvariantCultureIgnoreCase);
+        return path[(idx + segment.Length)..];
     }
 }

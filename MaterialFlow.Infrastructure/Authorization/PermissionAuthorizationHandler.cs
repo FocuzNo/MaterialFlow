@@ -7,8 +7,6 @@ namespace MaterialFlow.Infrastructure.Authorization;
 internal sealed class PermissionAuthorizationHandler(IServiceProvider serviceProvider)
     : AuthorizationHandler<PermissionRequirement>
 {
-    private readonly IServiceProvider _serviceProvider = serviceProvider;
-
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         PermissionRequirement requirement)
@@ -18,13 +16,13 @@ internal sealed class PermissionAuthorizationHandler(IServiceProvider servicePro
             return;
         }
 
-        using IServiceScope scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
 
-        AuthorizationService authorizationService = scope.ServiceProvider.GetRequiredService<AuthorizationService>();
+        var authorizationService = scope.ServiceProvider.GetRequiredService<AuthorizationService>();
 
-        string identityId = context.User.GetIdentityId();
+        var identityId = context.User.GetIdentityId();
 
-        HashSet<string> permissions = await authorizationService.GetPermissionsForUserAsync(identityId);
+        var permissions = await authorizationService.GetPermissionsForUserAsync(identityId);
 
         if (permissions.Contains(requirement.Permission))
         {

@@ -3,23 +3,20 @@ using Microsoft.Extensions.Options;
 
 namespace MaterialFlow.Infrastructure.Authentication;
 
-internal sealed class JwtBearerOptionsSetup(IOptions<AuthenticationOptions> authenticationOptions)
+internal sealed class JwtBearerOptionsSetup(IOptions<AuthenticationOptions> options)
     : IConfigureNamedOptions<JwtBearerOptions>
 {
-    private readonly AuthenticationOptions _authenticationOptions = authenticationOptions.Value;
+    private readonly AuthenticationOptions _options = options.Value;
 
-    public void Configure(JwtBearerOptions options)
+    public void Configure(JwtBearerOptions opts)
     {
-        options.Audience = _authenticationOptions.Audience;
-        options.MetadataAddress = _authenticationOptions.MetadataUrl;
-        options.RequireHttpsMetadata = _authenticationOptions.RequireHttpsMetadata;
-        options.TokenValidationParameters.ValidIssuer = _authenticationOptions.Issuer;
+        opts.Audience = _options.Audience;
+        opts.MetadataAddress = _options.MetadataUrl;
+        opts.RequireHttpsMetadata = _options.RequireHttpsMetadata;
+        opts.TokenValidationParameters.ValidIssuer = _options.Issuer;
     }
 
     public void Configure(
         string? name,
-        JwtBearerOptions options)
-    {
-        Configure(options);
-    }
+        JwtBearerOptions opts) => Configure(opts);
 }

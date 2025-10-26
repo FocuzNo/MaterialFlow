@@ -9,49 +9,50 @@ namespace MaterialFlow.Infrastructure.Authentication;
 internal sealed class AdminAuthorizationDelegatingHandler(IOptions<KeycloakOptions> keycloakOptions)
     : DelegatingHandler
 {
-    private readonly KeycloakOptions _keycloakOptions = keycloakOptions.Value;
+    private readonly KeycloakOptions _opts = keycloakOptions.Value;
 
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
         CancellationToken cancellationToken)
     {
-        AuthorizationToken authorizationToken = await GetAuthorizationToken(cancellationToken);
+        var token = await GetAuthorizationToken(cancellationToken);
 
         request.Headers.Authorization = new AuthenticationHeaderValue(
             JwtBearerDefaults.AuthenticationScheme,
-            authorizationToken.AccessToken);
+            token.AccessToken);
 
-        HttpResponseMessage httpResponseMessage = await base.SendAsync(request, cancellationToken);
+        var response = await base.SendAsync(
+            request,
+            cancellationToken);
 
-        httpResponseMessage.EnsureSuccessStatusCode();
+        response.EnsureSuccessStatusCode();
 
-        return httpResponseMessage;
+        return response;
     }
 
     private async Task<AuthorizationToken> GetAuthorizationToken(CancellationToken cancellationToken)
     {
-        var authorizationRequestParameters = new KeyValuePair<string, string>[]
+        var parameters = new[]
         {
-            new("client_id", _keycloakOptions.AdminClientId),
-            new("client_secret", _keycloakOptions.AdminClientSecret),
-            new("scope", "openid email"),
-            new("grant_type", "client_credentials")
+            new KeyValuePair<string, string>("client_id", _opts.AdminClientId),
+            new KeyValuePair<string, string>("client_secret", _opts.AdminClientSecret),
+            new KeyValuePair<string, string>("scope", "openid email"),
+            new KeyValuePair<string, string>("grant_type", "client_credentials")
         };
 
-        var authorizationRequestContent = new FormUrlEncodedContent(authorizationRequestParameters);
-
-        using var authorizationRequest = new HttpRequestMessage(
+        using var request = new HttpRequestMessage(
             HttpMethod.Post,
-            new Uri(_keycloakOptions.TokenUrl))
+            _opts.TokenUrl)
         {
-            Content = authorizationRequestContent
+            Content = new FormUrlEncodedContent(parameters)
         };
 
-        HttpResponseMessage authorizationResponse = await base.SendAsync(authorizationRequest, cancellationToken);
+        var res = await base.SendAsync(request,
+            cancellationToken);
 
-        authorizationResponse.EnsureSuccessStatusCode();
+        res.EnsureSuccessStatusCode();
 
-        return await authorizationResponse.Content.ReadFromJsonAsync<AuthorizationToken>(cancellationToken) ??
-            throw new ApplicationException();
+        return await res.Content.ReadFromJsonAsync<AuthorizationToken>(cancellationToken)
+            ?? throw new ApplicationException("Token acquisition failed");
     }
 }
