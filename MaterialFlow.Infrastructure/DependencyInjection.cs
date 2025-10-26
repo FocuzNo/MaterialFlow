@@ -1,15 +1,12 @@
 ﻿using MaterialFlow.Application.Abstractions.Authentication;
 using MaterialFlow.Application.Abstractions.Caching;
 using MaterialFlow.Domain.Abstractions;
-using MaterialFlow.Domain.Users;
 using MaterialFlow.Infrastructure.Authentication;
 using MaterialFlow.Infrastructure.Authorization;
 using MaterialFlow.Infrastructure.Caching;
-using MaterialFlow.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
