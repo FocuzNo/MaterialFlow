@@ -1,5 +1,4 @@
 using HealthChecks.UI.Client;
-using HealthChecks.UI.Core;
 using MaterialFlow.Api.Extensions;
 using MaterialFlow.Application;
 using MaterialFlow.Infrastructure;

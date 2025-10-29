@@ -4,12 +4,14 @@ using MaterialFlow.Domain.Abstractions;
 using MaterialFlow.Infrastructure.Authentication;
 using MaterialFlow.Infrastructure.Authorization;
 using MaterialFlow.Infrastructure.Caching;
+using MaterialFlow.Infrastructure.Outbox;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Quartz;
 using AuthenticationOptions = MaterialFlow.Infrastructure.Authentication.AuthenticationOptions;
 using AuthenticationService = MaterialFlow.Infrastructure.Authentication.AuthenticationService;
 using IAuthenticationService = MaterialFlow.Application.Abstractions.Authentication.IAuthenticationService;
@@ -26,6 +28,7 @@ public static class DependencyInjection
             .AddPersistence(configuration)
             .AddCaching(configuration)
             .AddHealthChecks(configuration)
+            .AddBackgroundJobs(configuration)
             .AddAuthentication(configuration)
             .AddAuthorization();
 
@@ -78,6 +81,21 @@ public static class DependencyInjection
             .AddNpgSql(configuration.GetConnectionString("Database")!)
             .AddRedis(configuration.GetConnectionString("Cache")!)
             .AddUrlGroup(new Uri(configuration["KeyCloak:BaseUrl"]!), HttpMethod.Get, "keycloak");
+
+        return services;
+    }
+
+    private static IServiceCollection AddBackgroundJobs(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.Configure<OutboxOptions>(configuration.GetSection("Outbox"));
+
+        services.AddQuartz();
+
+        services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
+
+        services.ConfigureOptions<ProcessOutboxMessagesJobSetup>();
 
         return services;
     }
