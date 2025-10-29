@@ -1,7 +1,10 @@
+using HealthChecks.UI.Client;
+using HealthChecks.UI.Core;
 using MaterialFlow.Api.Extensions;
 using MaterialFlow.Application;
 using MaterialFlow.Infrastructure;
 using MaterialFlow.Presentation.Endpoints;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +22,8 @@ builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer<OpenApiAuthTransformer>();
 });
+
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -39,5 +44,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapEndpoints();
+
+app.MapHealthChecks("health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});
 
 app.Run();
