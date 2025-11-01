@@ -15,6 +15,7 @@ services:
       - materialflow-db
       - materialflow-idp
       - materialflow-cache
+      - materialflow-seq
     ports:
       - "8080:8080"
 
@@ -58,6 +59,20 @@ services:
     networks:
       - materialflow-network
 
+  materialflow-seq:
+    image: datalust/seq:latest
+    container_name: MaterialFlow.Seq
+    environment:
+      - ACCEPT_EULA=Y
+    networks:
+      - materialflow-network
+    ports:
+      - "5341:5341"
+      - "8081:80"
+    volumes:
+      - seq-data:/data
+    restart: unless-stopped
+
 networks:
   materialflow-network:
     driver: bridge
@@ -65,3 +80,4 @@ networks:
 volumes:
   postgres-data:
   redis-data:
+  seq-data:

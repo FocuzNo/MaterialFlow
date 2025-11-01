@@ -1,4 +1,5 @@
-﻿using MaterialFlow.Infrastructure;
+﻿using MaterialFlow.Api.Middleware;
+using MaterialFlow.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace MaterialFlow.Api.Extensions;
@@ -12,5 +13,17 @@ internal static class ApplicationBuilderExtensions
         using ApplicationDbContext dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         dbContext.Database.Migrate();
+    }
+
+    public static void UseCustomExceptionHandler(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
+    }
+
+    public static IApplicationBuilder UseRequestContextLogging(this IApplicationBuilder app)
+    {
+        app.UseMiddleware<RequestContextLoggingMiddleware>();
+
+        return app;
     }
 }
