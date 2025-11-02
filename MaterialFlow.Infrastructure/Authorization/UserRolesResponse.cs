@@ -1,4 +1,6 @@
-﻿namespace MaterialFlow.Infrastructure.Authorization;
+﻿using MaterialFlow.Domain.Users;
+
+namespace MaterialFlow.Infrastructure.Authorization;
 
 internal sealed class UserRolesResponse
 {

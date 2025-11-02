@@ -40,6 +40,9 @@ services:
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HOSTNAME_URL=http://materialflow-idp:8080
+      - KC_HOSTNAME_ADMIN_URL=http://localhost:18080
+      - KC_HOSTNAME_STRICT=false
     volumes:
       - ./.containers/identity:/opt/keycloak/data
       - ./.files/material-flow-realm-export.json:/opt/keycloak/data/import/realm.json

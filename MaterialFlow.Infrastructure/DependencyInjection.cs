@@ -4,10 +4,12 @@ using MaterialFlow.Domain.Abstractions;
 using MaterialFlow.Infrastructure.Authentication;
 using MaterialFlow.Infrastructure.Authorization;
 using MaterialFlow.Infrastructure.Caching;
+using MaterialFlow.Infrastructure.Interceptors;
 using MaterialFlow.Infrastructure.Outbox;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -20,6 +22,10 @@ namespace MaterialFlow.Infrastructure;
 
 public static class DependencyInjection
 {
+    private const string KeycloakSectionName = "Keycloak";
+    private const string AuthenticationSectionName = "Authentication";
+    private const string OutboxSectionName = "Outbox";
+
     public static IServiceCollection AddInfrastructure(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -29,8 +35,8 @@ public static class DependencyInjection
             .AddCaching(configuration)
             .AddHealthChecks(configuration)
             .AddBackgroundJobs(configuration)
-            .AddAuthentication(configuration)
-            .AddAuthorization();
+            .AddAuthenticationServices(configuration)
+            .AddAuthorizationServices();
 
         return services;
     }
@@ -39,23 +45,24 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("Database")
-            ?? throw new ArgumentNullException(nameof(configuration));
+        var connectionString = GetRequiredConnectionString(configuration, "Database");
 
-        services.AddDbContext<ApplicationDbContext>(opts =>
-            opts.UseNpgsql(connectionString)
-                .UseSnakeCaseNamingConvention());
+        services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseNpgsql(connectionString)
+                .UseSnakeCaseNamingConvention()
+                .AddInterceptors(new OutboxSaveChangesInterceptor())
+                .ConfigureWarnings(warnings =>
+                    warnings.Ignore(RelationalEventId.PendingModelChangesWarning)));
+
+        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
         services.Scan(scan => scan
             .FromAssemblyOf<ApplicationDbContext>()
-            .AddClasses(c => c.Where(t => t.Name.EndsWith("Repository")), publicOnly: false)
+            .AddClasses(classes => classes.Where(
+                type => type.Name.EndsWith("Repository")),
+                publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime());
-
-        services.AddMediatR(cfg =>
-            cfg.RegisterServicesFromAssemblies(typeof(ApplicationDbContext).Assembly));
-
-        services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
 
         return services;
     }
@@ -64,10 +71,11 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        var cacheConnection = configuration.GetConnectionString("Cache")
-            ?? throw new ArgumentNullException(nameof(configuration));
+        var connectionString = GetRequiredConnectionString(
+            configuration,
+            "Cache");
 
-        services.AddStackExchangeRedisCache(opts => opts.Configuration = cacheConnection);
+        services.AddStackExchangeRedisCache(options => options.Configuration = connectionString);
         services.AddSingleton<ICacheService, CacheService>();
 
         return services;
@@ -77,10 +85,13 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
+        var keycloakBaseUrl = configuration[$"{KeycloakSectionName}:BaseUrl"]
+            ?? throw new InvalidOperationException("Keycloak BaseUrl is not configured");
+
         services.AddHealthChecks()
-            .AddNpgSql(configuration.GetConnectionString("Database")!)
-            .AddRedis(configuration.GetConnectionString("Cache")!)
-            .AddUrlGroup(new Uri(configuration["KeyCloak:BaseUrl"]!), HttpMethod.Get, "keycloak");
+            .AddNpgSql(GetRequiredConnectionString(configuration, "Database"))
+            .AddRedis(GetRequiredConnectionString(configuration, "Cache"))
+            .AddUrlGroup(new Uri(keycloakBaseUrl), HttpMethod.Get, "keycloak");
 
         return services;
     }
@@ -89,45 +100,43 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<OutboxOptions>(configuration.GetSection("Outbox"));
+        services.Configure<OutboxOptions>(configuration.GetSection(OutboxSectionName));
 
         services.AddQuartz();
-
         services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
-
         services.ConfigureOptions<ProcessOutboxMessagesJobSetup>();
 
         return services;
     }
 
-    private static IServiceCollection AddAuthentication(
+    private static IServiceCollection AddAuthenticationServices(
         this IServiceCollection services,
         IConfiguration configuration)
     {
         services
             .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(opts =>
+            .AddJwtBearer(options =>
             {
-                opts.Authority = "http://materialflow-idp:8080/realms/materialflow";
-                opts.Audience = "materialflow-api";
-                opts.RequireHttpsMetadata = false;
+                options.Authority = "http://materialflow-idp:8080/realms/materialflow";
+                options.Audience = "materialflow-api";
+                options.RequireHttpsMetadata = false;
             });
 
-        services.Configure<AuthenticationOptions>(configuration.GetSection("Authentication"));
-        services.Configure<KeycloakOptions>(configuration.GetSection("Keycloak"));
+        services.Configure<AuthenticationOptions>(configuration.GetSection(AuthenticationSectionName));
+        services.Configure<KeycloakOptions>(configuration.GetSection(KeycloakSectionName));
 
         services.AddTransient<AdminAuthorizationDelegatingHandler>();
 
-        services.AddHttpClient<IAuthenticationService, AuthenticationService>(static (sp, client) =>
+        services.AddHttpClient<IAuthenticationService, AuthenticationService>((sp, client) =>
         {
-            var opts = sp.GetRequiredService<IOptions<KeycloakOptions>>().Value;
-            client.BaseAddress = new Uri(opts.AdminUrl);
+            var options = sp.GetRequiredService<IOptions<KeycloakOptions>>().Value;
+            client.BaseAddress = new Uri(options.AdminUrl);
         }).AddHttpMessageHandler<AdminAuthorizationDelegatingHandler>();
 
-        services.AddHttpClient<IJwtService, JwtService>(static (sp, client) =>
+        services.AddHttpClient<IJwtService, JwtService>((sp, client) =>
         {
-            var opts = sp.GetRequiredService<IOptions<KeycloakOptions>>().Value;
-            client.BaseAddress = new Uri(opts.TokenUrl);
+            var options = sp.GetRequiredService<IOptions<KeycloakOptions>>().Value;
+            client.BaseAddress = new Uri(options.TokenUrl);
         });
 
         services.AddHttpContextAccessor();
@@ -136,14 +145,19 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddAuthorization(this IServiceCollection services)
+    private static IServiceCollection AddAuthorizationServices(this IServiceCollection services)
     {
-        services
-            .AddScoped<AuthorizationService>()
-            .AddTransient<IClaimsTransformation, CustomClaimsTransformation>()
-            .AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>()
-            .AddTransient<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
+        services.AddScoped<AuthorizationService>();
+        services.AddTransient<IClaimsTransformation, CustomClaimsTransformation>();
+        services.AddTransient<IAuthorizationHandler, PermissionAuthorizationHandler>();
+        services.AddTransient<IAuthorizationPolicyProvider, PermissionAuthorizationPolicyProvider>();
 
         return services;
+    }
+
+    private static string GetRequiredConnectionString(IConfiguration configuration, string name)
+    {
+        return configuration.GetConnectionString(name)
+            ?? throw new InvalidOperationException($"Connection string '{name}' is not configured");
     }
 }

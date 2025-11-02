@@ -3,6 +3,7 @@ using System;
 using MaterialFlow.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,13 +12,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MaterialFlow.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251101133117_UpdateUsers")]
+    partial class UpdateUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasDefaultSchema("public")
                 .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -59,15 +61,15 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("status");
 
                     b.HasKey("Id")
-                        .HasName("pk_component_reservations");
+                        .HasName("pk_component_reservation");
 
                     b.HasIndex("MaterialId")
-                        .HasDatabaseName("ix_component_reservations_material_id");
+                        .HasDatabaseName("ix_component_reservation_material_id");
 
                     b.HasIndex("SiteId")
-                        .HasDatabaseName("ix_component_reservations_site_id");
+                        .HasDatabaseName("ix_component_reservation_site_id");
 
-                    b.ToTable("component_reservations", "public");
+                    b.ToTable("component_reservation", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.ForecastPlanItems.ForecastPlanItem", b =>
@@ -91,12 +93,12 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("period_start_date");
 
                     b.HasKey("Id")
-                        .HasName("pk_forecast_plan_items");
+                        .HasName("pk_forecast_plan_item");
 
                     b.HasIndex("ForecastPlanId")
-                        .HasDatabaseName("ix_forecast_plan_items_forecast_plan_id");
+                        .HasDatabaseName("ix_forecast_plan_item_forecast_plan_id");
 
-                    b.ToTable("forecast_plan_items", "public");
+                    b.ToTable("forecast_plan_item", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.ForecastPlans.ForecastPlan", b =>
@@ -136,18 +138,18 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("version");
 
                     b.HasKey("Id")
-                        .HasName("pk_forecast_plans");
+                        .HasName("pk_forecast_plan");
 
                     b.HasIndex("MaterialId")
-                        .HasDatabaseName("ix_forecast_plans_material_id");
+                        .HasDatabaseName("ix_forecast_plan_material_id");
 
                     b.HasIndex("PlanningAreaId")
-                        .HasDatabaseName("ix_forecast_plans_planning_area_id");
+                        .HasDatabaseName("ix_forecast_plan_planning_area_id");
 
                     b.HasIndex("SiteId")
-                        .HasDatabaseName("ix_forecast_plans_site_id");
+                        .HasDatabaseName("ix_forecast_plan_site_id");
 
-                    b.ToTable("forecast_plans", "public");
+                    b.ToTable("forecast_plan", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.InventoryBalances.InventoryBalance", b =>
@@ -175,18 +177,18 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("storage_location_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_inventory_balances");
+                        .HasName("pk_inventory_balance");
 
                     b.HasIndex("MaterialId")
-                        .HasDatabaseName("ix_inventory_balances_material_id");
+                        .HasDatabaseName("ix_inventory_balance_material_id");
 
                     b.HasIndex("SiteId")
-                        .HasDatabaseName("ix_inventory_balances_site_id");
+                        .HasDatabaseName("ix_inventory_balance_site_id");
 
                     b.HasIndex("StorageLocationId")
-                        .HasDatabaseName("ix_inventory_balances_storage_location_id");
+                        .HasDatabaseName("ix_inventory_balance_storage_location_id");
 
-                    b.ToTable("inventory_balances", "public");
+                    b.ToTable("inventory_balance", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.Materials.Material", b =>
@@ -229,9 +231,9 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("procurement_type");
 
                     b.HasKey("Id")
-                        .HasName("pk_materials");
+                        .HasName("pk_material");
 
-                    b.ToTable("materials", "public");
+                    b.ToTable("material", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.PlannedProductionOrders.PlannedProductionOrder", b =>
@@ -273,18 +275,18 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("start_date");
 
                     b.HasKey("Id")
-                        .HasName("pk_planned_production_orders");
+                        .HasName("pk_planned_production_order");
 
                     b.HasIndex("MaterialId")
-                        .HasDatabaseName("ix_planned_production_orders_material_id");
+                        .HasDatabaseName("ix_planned_production_order_material_id");
 
                     b.HasIndex("PlanningRunId")
-                        .HasDatabaseName("ix_planned_production_orders_planning_run_id");
+                        .HasDatabaseName("ix_planned_production_order_planning_run_id");
 
                     b.HasIndex("SiteId")
-                        .HasDatabaseName("ix_planned_production_orders_site_id");
+                        .HasDatabaseName("ix_planned_production_order_site_id");
 
-                    b.ToTable("planned_production_orders", "public");
+                    b.ToTable("planned_production_order", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.PlanningAreas.PlanningArea", b =>
@@ -311,12 +313,12 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("site_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_planning_areas");
+                        .HasName("pk_planning_area");
 
                     b.HasIndex("SiteId")
-                        .HasDatabaseName("ix_planning_areas_site_id");
+                        .HasDatabaseName("ix_planning_area_site_id");
 
-                    b.ToTable("planning_areas", "public");
+                    b.ToTable("planning_area", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.PlanningRunLines.PlanningRunLine", b =>
@@ -353,18 +355,18 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("site_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_planning_run_lines");
+                        .HasName("pk_planning_run_line");
 
                     b.HasIndex("MaterialId")
-                        .HasDatabaseName("ix_planning_run_lines_material_id");
+                        .HasDatabaseName("ix_planning_run_line_material_id");
 
                     b.HasIndex("PlanningRunId")
-                        .HasDatabaseName("ix_planning_run_lines_planning_run_id");
+                        .HasDatabaseName("ix_planning_run_line_planning_run_id");
 
                     b.HasIndex("SiteId")
-                        .HasDatabaseName("ix_planning_run_lines_site_id");
+                        .HasDatabaseName("ix_planning_run_line_site_id");
 
-                    b.ToTable("planning_run_lines", "public");
+                    b.ToTable("planning_run_line", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.PlanningRuns.PlanningRun", b =>
@@ -403,15 +405,15 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("started_by_user");
 
                     b.HasKey("Id")
-                        .HasName("pk_planning_runs");
+                        .HasName("pk_planning_run");
 
                     b.HasIndex("PlanningAreaId")
-                        .HasDatabaseName("ix_planning_runs_planning_area_id");
+                        .HasDatabaseName("ix_planning_run_planning_area_id");
 
                     b.HasIndex("SiteId")
-                        .HasDatabaseName("ix_planning_runs_site_id");
+                        .HasDatabaseName("ix_planning_run_site_id");
 
-                    b.ToTable("planning_runs", "public");
+                    b.ToTable("planning_run", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.ProductComponents.ProductComponent", b =>
@@ -435,15 +437,15 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("scrap_percentage");
 
                     b.HasKey("Id")
-                        .HasName("pk_product_components");
+                        .HasName("pk_product_component");
 
                     b.HasIndex("MaterialId")
-                        .HasDatabaseName("ix_product_components_material_id");
+                        .HasDatabaseName("ix_product_component_material_id");
 
                     b.HasIndex("ProductStructureId")
-                        .HasDatabaseName("ix_product_components_product_structure_id");
+                        .HasDatabaseName("ix_product_component_product_structure_id");
 
-                    b.ToTable("product_components", "public");
+                    b.ToTable("product_component", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.ProductStructures.ProductStructure", b =>
@@ -487,15 +489,15 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("valid_to_date");
 
                     b.HasKey("Id")
-                        .HasName("pk_product_structures");
+                        .HasName("pk_product_structure");
 
                     b.HasIndex("MaterialId")
-                        .HasDatabaseName("ix_product_structures_material_id");
+                        .HasDatabaseName("ix_product_structure_material_id");
 
                     b.HasIndex("SiteId")
-                        .HasDatabaseName("ix_product_structures_site_id");
+                        .HasDatabaseName("ix_product_structure_site_id");
 
-                    b.ToTable("product_structures", "public");
+                    b.ToTable("product_structure", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.ProductionOrders.ProductionOrder", b =>
@@ -532,18 +534,18 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("site_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_production_orders");
+                        .HasName("pk_production_order");
 
                     b.HasIndex("MaterialId")
-                        .HasDatabaseName("ix_production_orders_material_id");
+                        .HasDatabaseName("ix_production_order_material_id");
 
                     b.HasIndex("PlannedProductionOrderId")
-                        .HasDatabaseName("ix_production_orders_planned_production_order_id");
+                        .HasDatabaseName("ix_production_order_planned_production_order_id");
 
                     b.HasIndex("SiteId")
-                        .HasDatabaseName("ix_production_orders_site_id");
+                        .HasDatabaseName("ix_production_order_site_id");
 
-                    b.ToTable("production_orders", "public");
+                    b.ToTable("production_order", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.PurchaseRequests.PurchaseRequest", b =>
@@ -581,18 +583,18 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("site_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_purchase_requests");
+                        .HasName("pk_purchase_request");
 
                     b.HasIndex("MaterialId")
-                        .HasDatabaseName("ix_purchase_requests_material_id");
+                        .HasDatabaseName("ix_purchase_request_material_id");
 
                     b.HasIndex("PlanningRunId")
-                        .HasDatabaseName("ix_purchase_requests_planning_run_id");
+                        .HasDatabaseName("ix_purchase_request_planning_run_id");
 
                     b.HasIndex("SiteId")
-                        .HasDatabaseName("ix_purchase_requests_site_id");
+                        .HasDatabaseName("ix_purchase_request_site_id");
 
-                    b.ToTable("purchase_requests", "public");
+                    b.ToTable("purchase_request", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.SalesOrderDemands.SalesOrderDemand", b =>
@@ -615,15 +617,15 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("site_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_sales_order_demands");
+                        .HasName("pk_sales_order_demand");
 
                     b.HasIndex("MaterialId")
-                        .HasDatabaseName("ix_sales_order_demands_material_id");
+                        .HasDatabaseName("ix_sales_order_demand_material_id");
 
                     b.HasIndex("SiteId")
-                        .HasDatabaseName("ix_sales_order_demands_site_id");
+                        .HasDatabaseName("ix_sales_order_demand_site_id");
 
-                    b.ToTable("sales_order_demands", "public");
+                    b.ToTable("sales_order_demand", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.Sites.Site", b =>
@@ -646,13 +648,13 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("plant_code");
 
                     b.HasKey("Id")
-                        .HasName("pk_sites");
+                        .HasName("pk_site");
 
                     b.HasIndex("PlantCode")
                         .IsUnique()
-                        .HasDatabaseName("ix_sites_plant_code");
+                        .HasDatabaseName("ix_site_plant_code");
 
-                    b.ToTable("sites", "public");
+                    b.ToTable("site", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.Sites.StorageLocation", b =>
@@ -677,12 +679,12 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("site_id");
 
                     b.HasKey("Id")
-                        .HasName("pk_storage_locations");
+                        .HasName("pk_storage_location");
 
                     b.HasIndex("SiteId")
-                        .HasDatabaseName("ix_storage_locations_site_id");
+                        .HasDatabaseName("ix_storage_location_site_id");
 
-                    b.ToTable("storage_locations", "public");
+                    b.ToTable("storage_location", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.Users.Permission", b =>
@@ -697,55 +699,10 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnType("character varying(150)")
                         .HasColumnName("name");
 
-                    b.Property<int?>("RoleId")
-                        .HasColumnType("integer")
-                        .HasColumnName("role_id");
-
                     b.HasKey("Id")
                         .HasName("pk_permission");
 
-                    b.HasIndex("RoleId")
-                        .HasDatabaseName("ix_permission_role_id");
-
-                    b.ToTable("permission", "public");
-                });
-
-            modelBuilder.Entity("MaterialFlow.Domain.Users.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id")
-                        .HasName("pk_roles");
-
-                    b.ToTable("roles", "public");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Administrator"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Planner"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Viewer"
-                        });
+                    b.ToTable("permission", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.Users.RolePermission", b =>
@@ -759,9 +716,12 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasColumnName("permission_id");
 
                     b.HasKey("RoleId", "PermissionId")
-                        .HasName("pk_role_permissions");
+                        .HasName("pk_role_permission");
 
-                    b.ToTable("role_permissions", "public");
+                    b.HasIndex("PermissionId")
+                        .HasDatabaseName("ix_role_permission_permission_id");
+
+                    b.ToTable("role_permission", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.Users.User", b =>
@@ -793,7 +753,7 @@ namespace MaterialFlow.Infrastructure.Migrations
                     b.HasIndex("IdentityId")
                         .HasDatabaseName("ix_users_identity_id");
 
-                    b.ToTable("users", "public");
+                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Infrastructure.Outbox.OutboxMessage", b =>
@@ -833,7 +793,28 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasDatabaseName("idx_outbox_unprocessed")
                         .HasFilter("\"processed_on_utc\" IS NULL");
 
-                    b.ToTable("outbox_messages", "public");
+                    b.ToTable("outbox_messages", (string)null);
+                });
+
+            modelBuilder.Entity("Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_role");
+
+                    b.ToTable("role", (string)null);
                 });
 
             modelBuilder.Entity("RoleUser", b =>
@@ -852,7 +833,7 @@ namespace MaterialFlow.Infrastructure.Migrations
                     b.HasIndex("UsersId")
                         .HasDatabaseName("ix_role_user_users_id");
 
-                    b.ToTable("role_user", "public");
+                    b.ToTable("role_user", (string)null);
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.ComponentReservations.ComponentReservation", b =>
@@ -862,14 +843,14 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_component_reservations_materials_material_id");
+                        .HasConstraintName("fk_component_reservation_material_material_id");
 
                     b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_component_reservations_sites_site_id");
+                        .HasConstraintName("fk_component_reservation_site_site_id");
 
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.Quantity", "Quantity", b1 =>
                         {
@@ -884,11 +865,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("ComponentReservationId");
 
-                            b1.ToTable("component_reservations", "public");
+                            b1.ToTable("component_reservation");
 
                             b1.WithOwner()
                                 .HasForeignKey("ComponentReservationId")
-                                .HasConstraintName("fk_component_reservations_component_reservations_id");
+                                .HasConstraintName("fk_component_reservation_component_reservation_id");
 
                             b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
                                 {
@@ -904,11 +885,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                                     b2.HasKey("QuantityComponentReservationId");
 
-                                    b2.ToTable("component_reservations", "public");
+                                    b2.ToTable("component_reservation");
 
                                     b2.WithOwner()
                                         .HasForeignKey("QuantityComponentReservationId")
-                                        .HasConstraintName("fk_component_reservations_component_reservations_id");
+                                        .HasConstraintName("fk_component_reservation_component_reservation_id");
                                 });
 
                             b1.Navigation("UnitOfMeasure")
@@ -930,7 +911,7 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("ForecastPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_forecast_plan_items_forecast_plans_forecast_plan_id");
+                        .HasConstraintName("fk_forecast_plan_item_forecast_plan_forecast_plan_id");
 
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.Quantity", "Quantity", b1 =>
                         {
@@ -945,11 +926,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("ForecastPlanItemId");
 
-                            b1.ToTable("forecast_plan_items", "public");
+                            b1.ToTable("forecast_plan_item");
 
                             b1.WithOwner()
                                 .HasForeignKey("ForecastPlanItemId")
-                                .HasConstraintName("fk_forecast_plan_items_forecast_plan_items_id");
+                                .HasConstraintName("fk_forecast_plan_item_forecast_plan_item_id");
 
                             b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
                                 {
@@ -965,11 +946,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                                     b2.HasKey("QuantityForecastPlanItemId");
 
-                                    b2.ToTable("forecast_plan_items", "public");
+                                    b2.ToTable("forecast_plan_item");
 
                                     b2.WithOwner()
                                         .HasForeignKey("QuantityForecastPlanItemId")
-                                        .HasConstraintName("fk_forecast_plan_items_forecast_plan_items_id");
+                                        .HasConstraintName("fk_forecast_plan_item_forecast_plan_item_id");
                                 });
 
                             b1.Navigation("UnitOfMeasure")
@@ -989,17 +970,17 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_forecast_plans_materials_material_id");
+                        .HasConstraintName("fk_forecast_plan_material_material_id");
 
                     b.HasOne("MaterialFlow.Domain.PlanningAreas.PlanningArea", "PlanningArea")
                         .WithMany()
                         .HasForeignKey("PlanningAreaId")
-                        .HasConstraintName("fk_forecast_plans_planning_areas_planning_area_id");
+                        .HasConstraintName("fk_forecast_plan_planning_area_planning_area_id");
 
                     b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
-                        .HasConstraintName("fk_forecast_plans_sites_site_id");
+                        .HasConstraintName("fk_forecast_plan_site_site_id");
 
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b1 =>
                         {
@@ -1015,11 +996,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("ForecastPlanId");
 
-                            b1.ToTable("forecast_plans", "public");
+                            b1.ToTable("forecast_plan");
 
                             b1.WithOwner()
                                 .HasForeignKey("ForecastPlanId")
-                                .HasConstraintName("fk_forecast_plans_forecast_plans_id");
+                                .HasConstraintName("fk_forecast_plan_forecast_plan_id");
                         });
 
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.DateRange", "DateRange", b1 =>
@@ -1038,11 +1019,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("ForecastPlanId");
 
-                            b1.ToTable("forecast_plans", "public");
+                            b1.ToTable("forecast_plan");
 
                             b1.WithOwner()
                                 .HasForeignKey("ForecastPlanId")
-                                .HasConstraintName("fk_forecast_plans_forecast_plans_id");
+                                .HasConstraintName("fk_forecast_plan_forecast_plan_id");
                         });
 
                     b.Navigation("DateRange")
@@ -1065,19 +1046,19 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_inventory_balances_materials_material_id");
+                        .HasConstraintName("fk_inventory_balance_material_material_id");
 
                     b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_inventory_balances_sites_site_id");
+                        .HasConstraintName("fk_inventory_balance_site_site_id");
 
                     b.HasOne("MaterialFlow.Domain.Sites.StorageLocation", "StorageLocation")
                         .WithMany()
                         .HasForeignKey("StorageLocationId")
-                        .HasConstraintName("fk_inventory_balances_storage_locations_storage_location_id");
+                        .HasConstraintName("fk_inventory_balance_storage_location_storage_location_id");
 
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.Quantity", "OnHand", b1 =>
                         {
@@ -1092,11 +1073,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("InventoryBalanceId");
 
-                            b1.ToTable("inventory_balances", "public");
+                            b1.ToTable("inventory_balance");
 
                             b1.WithOwner()
                                 .HasForeignKey("InventoryBalanceId")
-                                .HasConstraintName("fk_inventory_balances_inventory_balances_id");
+                                .HasConstraintName("fk_inventory_balance_inventory_balance_id");
 
                             b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
                                 {
@@ -1112,11 +1093,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                                     b2.HasKey("QuantityInventoryBalanceId");
 
-                                    b2.ToTable("inventory_balances", "public");
+                                    b2.ToTable("inventory_balance");
 
                                     b2.WithOwner()
                                         .HasForeignKey("QuantityInventoryBalanceId")
-                                        .HasConstraintName("fk_inventory_balances_inventory_balances_id");
+                                        .HasConstraintName("fk_inventory_balance_inventory_balance_id");
                                 });
 
                             b1.Navigation("UnitOfMeasure")
@@ -1136,11 +1117,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("InventoryBalanceId");
 
-                            b1.ToTable("inventory_balances", "public");
+                            b1.ToTable("inventory_balance");
 
                             b1.WithOwner()
                                 .HasForeignKey("InventoryBalanceId")
-                                .HasConstraintName("fk_inventory_balances_inventory_balances_id");
+                                .HasConstraintName("fk_inventory_balance_inventory_balance_id");
 
                             b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
                                 {
@@ -1156,11 +1137,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                                     b2.HasKey("QuantityInventoryBalanceId");
 
-                                    b2.ToTable("inventory_balances", "public");
+                                    b2.ToTable("inventory_balance");
 
                                     b2.WithOwner()
                                         .HasForeignKey("QuantityInventoryBalanceId")
-                                        .HasConstraintName("fk_inventory_balances_inventory_balances_id");
+                                        .HasConstraintName("fk_inventory_balance_inventory_balance_id");
                                 });
 
                             b1.Navigation("UnitOfMeasure")
@@ -1195,11 +1176,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("MaterialId");
 
-                            b1.ToTable("materials", "public");
+                            b1.ToTable("material");
 
                             b1.WithOwner()
                                 .HasForeignKey("MaterialId")
-                                .HasConstraintName("fk_materials_materials_id");
+                                .HasConstraintName("fk_material_material_id");
 
                             b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
                                 {
@@ -1215,11 +1196,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                                     b2.HasKey("QuantityMaterialId");
 
-                                    b2.ToTable("materials", "public");
+                                    b2.ToTable("material");
 
                                     b2.WithOwner()
                                         .HasForeignKey("QuantityMaterialId")
-                                        .HasConstraintName("fk_materials_materials_id");
+                                        .HasConstraintName("fk_material_material_id");
                                 });
 
                             b1.Navigation("UnitOfMeasure")
@@ -1240,11 +1221,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("MaterialId");
 
-                            b1.ToTable("materials", "public");
+                            b1.ToTable("material");
 
                             b1.WithOwner()
                                 .HasForeignKey("MaterialId")
-                                .HasConstraintName("fk_materials_materials_id");
+                                .HasConstraintName("fk_material_material_id");
                         });
 
                     b.OwnsOne("MaterialFlow.Domain.Materials.ValueObjects.MaterialNumber", "MaterialNumber", b1 =>
@@ -1261,11 +1242,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("MaterialId");
 
-                            b1.ToTable("materials", "public");
+                            b1.ToTable("material");
 
                             b1.WithOwner()
                                 .HasForeignKey("MaterialId")
-                                .HasConstraintName("fk_materials_materials_id");
+                                .HasConstraintName("fk_material_material_id");
                         });
 
                     b.Navigation("MaterialNumber")
@@ -1285,19 +1266,19 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_planned_production_orders_materials_material_id");
+                        .HasConstraintName("fk_planned_production_order_material_material_id");
 
                     b.HasOne("MaterialFlow.Domain.PlanningRuns.PlanningRun", "PlanningRun")
                         .WithMany()
                         .HasForeignKey("PlanningRunId")
-                        .HasConstraintName("fk_planned_production_orders_planning_runs_planning_run_id");
+                        .HasConstraintName("fk_planned_production_order_planning_run_planning_run_id");
 
                     b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_planned_production_orders_sites_site_id");
+                        .HasConstraintName("fk_planned_production_order_site_site_id");
 
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b1 =>
                         {
@@ -1313,11 +1294,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("PlannedProductionOrderId");
 
-                            b1.ToTable("planned_production_orders", "public");
+                            b1.ToTable("planned_production_order");
 
                             b1.WithOwner()
                                 .HasForeignKey("PlannedProductionOrderId")
-                                .HasConstraintName("fk_planned_production_orders_planned_production_orders_id");
+                                .HasConstraintName("fk_planned_production_order_planned_production_order_id");
                         });
 
                     b.Navigation("Material");
@@ -1337,7 +1318,7 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_planning_areas_sites_site_id");
+                        .HasConstraintName("fk_planning_area_site_site_id");
 
                     b.Navigation("Site");
                 });
@@ -1349,21 +1330,21 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_planning_run_lines_materials_material_id");
+                        .HasConstraintName("fk_planning_run_line_material_material_id");
 
                     b.HasOne("MaterialFlow.Domain.PlanningRuns.PlanningRun", "PlanningRun")
                         .WithMany("Lines")
                         .HasForeignKey("PlanningRunId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_planning_run_lines_planning_runs_planning_run_id");
+                        .HasConstraintName("fk_planning_run_line_planning_run_planning_run_id");
 
                     b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_planning_run_lines_sites_site_id");
+                        .HasConstraintName("fk_planning_run_line_site_site_id");
 
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.Quantity", "AvailableQuantity", b1 =>
                         {
@@ -1378,11 +1359,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("PlanningRunLineId");
 
-                            b1.ToTable("planning_run_lines", "public");
+                            b1.ToTable("planning_run_line");
 
                             b1.WithOwner()
                                 .HasForeignKey("PlanningRunLineId")
-                                .HasConstraintName("fk_planning_run_lines_planning_run_lines_id");
+                                .HasConstraintName("fk_planning_run_line_planning_run_line_id");
 
                             b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
                                 {
@@ -1398,11 +1379,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                                     b2.HasKey("QuantityPlanningRunLineId");
 
-                                    b2.ToTable("planning_run_lines", "public");
+                                    b2.ToTable("planning_run_line");
 
                                     b2.WithOwner()
                                         .HasForeignKey("QuantityPlanningRunLineId")
-                                        .HasConstraintName("fk_planning_run_lines_planning_run_lines_id");
+                                        .HasConstraintName("fk_planning_run_line_planning_run_line_id");
                                 });
 
                             b1.Navigation("UnitOfMeasure")
@@ -1422,11 +1403,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("PlanningRunLineId");
 
-                            b1.ToTable("planning_run_lines", "public");
+                            b1.ToTable("planning_run_line");
 
                             b1.WithOwner()
                                 .HasForeignKey("PlanningRunLineId")
-                                .HasConstraintName("fk_planning_run_lines_planning_run_lines_id");
+                                .HasConstraintName("fk_planning_run_line_planning_run_line_id");
 
                             b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
                                 {
@@ -1442,11 +1423,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                                     b2.HasKey("QuantityPlanningRunLineId");
 
-                                    b2.ToTable("planning_run_lines", "public");
+                                    b2.ToTable("planning_run_line");
 
                                     b2.WithOwner()
                                         .HasForeignKey("QuantityPlanningRunLineId")
-                                        .HasConstraintName("fk_planning_run_lines_planning_run_lines_id");
+                                        .HasConstraintName("fk_planning_run_line_planning_run_line_id");
                                 });
 
                             b1.Navigation("UnitOfMeasure")
@@ -1466,11 +1447,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("PlanningRunLineId");
 
-                            b1.ToTable("planning_run_lines", "public");
+                            b1.ToTable("planning_run_line");
 
                             b1.WithOwner()
                                 .HasForeignKey("PlanningRunLineId")
-                                .HasConstraintName("fk_planning_run_lines_planning_run_lines_id");
+                                .HasConstraintName("fk_planning_run_line_planning_run_line_id");
 
                             b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
                                 {
@@ -1486,11 +1467,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                                     b2.HasKey("QuantityPlanningRunLineId");
 
-                                    b2.ToTable("planning_run_lines", "public");
+                                    b2.ToTable("planning_run_line");
 
                                     b2.WithOwner()
                                         .HasForeignKey("QuantityPlanningRunLineId")
-                                        .HasConstraintName("fk_planning_run_lines_planning_run_lines_id");
+                                        .HasConstraintName("fk_planning_run_line_planning_run_line_id");
                                 });
 
                             b1.Navigation("UnitOfMeasure")
@@ -1518,12 +1499,12 @@ namespace MaterialFlow.Infrastructure.Migrations
                     b.HasOne("MaterialFlow.Domain.PlanningAreas.PlanningArea", "PlanningArea")
                         .WithMany()
                         .HasForeignKey("PlanningAreaId")
-                        .HasConstraintName("fk_planning_runs_planning_areas_planning_area_id");
+                        .HasConstraintName("fk_planning_run_planning_area_planning_area_id");
 
                     b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
-                        .HasConstraintName("fk_planning_runs_sites_site_id");
+                        .HasConstraintName("fk_planning_run_site_site_id");
 
                     b.Navigation("PlanningArea");
 
@@ -1537,14 +1518,14 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_product_components_materials_material_id");
+                        .HasConstraintName("fk_product_component_material_material_id");
 
                     b.HasOne("MaterialFlow.Domain.ProductStructures.ProductStructure", "ProductStructure")
                         .WithMany("Components")
                         .HasForeignKey("ProductStructureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_product_components_product_structures_product_structure_id");
+                        .HasConstraintName("fk_product_component_product_structure_product_structure_id");
 
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.Quantity", "QuantityPer", b1 =>
                         {
@@ -1559,11 +1540,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("ProductComponentId");
 
-                            b1.ToTable("product_components", "public");
+                            b1.ToTable("product_component");
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductComponentId")
-                                .HasConstraintName("fk_product_components_product_components_id");
+                                .HasConstraintName("fk_product_component_product_component_id");
 
                             b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
                                 {
@@ -1579,11 +1560,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                                     b2.HasKey("QuantityProductComponentId");
 
-                                    b2.ToTable("product_components", "public");
+                                    b2.ToTable("product_component");
 
                                     b2.WithOwner()
                                         .HasForeignKey("QuantityProductComponentId")
-                                        .HasConstraintName("fk_product_components_product_components_id");
+                                        .HasConstraintName("fk_product_component_product_component_id");
                                 });
 
                             b1.Navigation("UnitOfMeasure")
@@ -1604,11 +1585,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("ProductComponentId");
 
-                            b1.ToTable("product_components", "public");
+                            b1.ToTable("product_component");
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductComponentId")
-                                .HasConstraintName("fk_product_components_product_components_id");
+                                .HasConstraintName("fk_product_component_product_component_id");
                         });
 
                     b.Navigation("Material");
@@ -1629,12 +1610,12 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_product_structures_materials_material_id");
+                        .HasConstraintName("fk_product_structure_material_material_id");
 
                     b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
-                        .HasConstraintName("fk_product_structures_sites_site_id");
+                        .HasConstraintName("fk_product_structure_site_site_id");
 
                     b.Navigation("Material");
 
@@ -1648,19 +1629,19 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_production_orders_materials_material_id");
+                        .HasConstraintName("fk_production_order_material_material_id");
 
                     b.HasOne("MaterialFlow.Domain.PlannedProductionOrders.PlannedProductionOrder", "PlannedProductionOrder")
                         .WithMany()
                         .HasForeignKey("PlannedProductionOrderId")
-                        .HasConstraintName("fk_production_orders_planned_production_orders_planned_product");
+                        .HasConstraintName("fk_production_order_planned_production_order_planned_productio");
 
                     b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_production_orders_sites_site_id");
+                        .HasConstraintName("fk_production_order_site_site_id");
 
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.Quantity", "QuantityToProduce", b1 =>
                         {
@@ -1675,11 +1656,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("ProductionOrderId");
 
-                            b1.ToTable("production_orders", "public");
+                            b1.ToTable("production_order");
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductionOrderId")
-                                .HasConstraintName("fk_production_orders_production_orders_id");
+                                .HasConstraintName("fk_production_order_production_order_id");
 
                             b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
                                 {
@@ -1695,11 +1676,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                                     b2.HasKey("QuantityProductionOrderId");
 
-                                    b2.ToTable("production_orders", "public");
+                                    b2.ToTable("production_order");
 
                                     b2.WithOwner()
                                         .HasForeignKey("QuantityProductionOrderId")
-                                        .HasConstraintName("fk_production_orders_production_orders_id");
+                                        .HasConstraintName("fk_production_order_production_order_id");
                                 });
 
                             b1.Navigation("UnitOfMeasure")
@@ -1720,11 +1701,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("ProductionOrderId");
 
-                            b1.ToTable("production_orders", "public");
+                            b1.ToTable("production_order");
 
                             b1.WithOwner()
                                 .HasForeignKey("ProductionOrderId")
-                                .HasConstraintName("fk_production_orders_production_orders_id");
+                                .HasConstraintName("fk_production_order_production_order_id");
                         });
 
                     b.Navigation("Material");
@@ -1747,19 +1728,19 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_purchase_requests_materials_material_id");
+                        .HasConstraintName("fk_purchase_request_material_material_id");
 
                     b.HasOne("MaterialFlow.Domain.PlanningRuns.PlanningRun", "PlanningRun")
                         .WithMany()
                         .HasForeignKey("PlanningRunId")
-                        .HasConstraintName("fk_purchase_requests_planning_runs_planning_run_id");
+                        .HasConstraintName("fk_purchase_request_planning_run_planning_run_id");
 
                     b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_purchase_requests_sites_site_id");
+                        .HasConstraintName("fk_purchase_request_site_site_id");
 
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.Quantity", "Quantity", b1 =>
                         {
@@ -1774,11 +1755,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("PurchaseRequestId");
 
-                            b1.ToTable("purchase_requests", "public");
+                            b1.ToTable("purchase_request");
 
                             b1.WithOwner()
                                 .HasForeignKey("PurchaseRequestId")
-                                .HasConstraintName("fk_purchase_requests_purchase_requests_id");
+                                .HasConstraintName("fk_purchase_request_purchase_request_id");
 
                             b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
                                 {
@@ -1794,11 +1775,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                                     b2.HasKey("QuantityPurchaseRequestId");
 
-                                    b2.ToTable("purchase_requests", "public");
+                                    b2.ToTable("purchase_request");
 
                                     b2.WithOwner()
                                         .HasForeignKey("QuantityPurchaseRequestId")
-                                        .HasConstraintName("fk_purchase_requests_purchase_requests_id");
+                                        .HasConstraintName("fk_purchase_request_purchase_request_id");
                                 });
 
                             b1.Navigation("UnitOfMeasure")
@@ -1819,11 +1800,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("PurchaseRequestId");
 
-                            b1.ToTable("purchase_requests", "public");
+                            b1.ToTable("purchase_request");
 
                             b1.WithOwner()
                                 .HasForeignKey("PurchaseRequestId")
-                                .HasConstraintName("fk_purchase_requests_purchase_requests_id");
+                                .HasConstraintName("fk_purchase_request_purchase_request_id");
                         });
 
                     b.Navigation("Material");
@@ -1846,14 +1827,14 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("MaterialId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_sales_order_demands_materials_material_id");
+                        .HasConstraintName("fk_sales_order_demand_material_material_id");
 
                     b.HasOne("MaterialFlow.Domain.Sites.Site", "Site")
                         .WithMany()
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_sales_order_demands_sites_site_id");
+                        .HasConstraintName("fk_sales_order_demand_site_site_id");
 
                     b.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.Quantity", "Quantity", b1 =>
                         {
@@ -1868,11 +1849,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("SalesOrderDemandId");
 
-                            b1.ToTable("sales_order_demands", "public");
+                            b1.ToTable("sales_order_demand");
 
                             b1.WithOwner()
                                 .HasForeignKey("SalesOrderDemandId")
-                                .HasConstraintName("fk_sales_order_demands_sales_order_demands_id");
+                                .HasConstraintName("fk_sales_order_demand_sales_order_demand_id");
 
                             b1.OwnsOne("MaterialFlow.Domain.Shared.ValueObjects.UnitOfMeasure", "UnitOfMeasure", b2 =>
                                 {
@@ -1888,11 +1869,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                                     b2.HasKey("QuantitySalesOrderDemandId");
 
-                                    b2.ToTable("sales_order_demands", "public");
+                                    b2.ToTable("sales_order_demand");
 
                                     b2.WithOwner()
                                         .HasForeignKey("QuantitySalesOrderDemandId")
-                                        .HasConstraintName("fk_sales_order_demands_sales_order_demands_id");
+                                        .HasConstraintName("fk_sales_order_demand_sales_order_demand_id");
                                 });
 
                             b1.Navigation("UnitOfMeasure")
@@ -1913,11 +1894,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("SalesOrderDemandId");
 
-                            b1.ToTable("sales_order_demands", "public");
+                            b1.ToTable("sales_order_demand");
 
                             b1.WithOwner()
                                 .HasForeignKey("SalesOrderDemandId")
-                                .HasConstraintName("fk_sales_order_demands_sales_order_demands_id");
+                                .HasConstraintName("fk_sales_order_demand_sales_order_demand_id");
                         });
 
                     b.OwnsOne("MaterialFlow.Domain.SalesOrderDemands.ValueObjects.SourceDocument", "SourceDocument", b1 =>
@@ -1946,11 +1927,11 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("SalesOrderDemandId");
 
-                            b1.ToTable("sales_order_demands", "public");
+                            b1.ToTable("sales_order_demand");
 
                             b1.WithOwner()
                                 .HasForeignKey("SalesOrderDemandId")
-                                .HasConstraintName("fk_sales_order_demands_sales_order_demands_id");
+                                .HasConstraintName("fk_sales_order_demand_sales_order_demand_id");
                         });
 
                     b.Navigation("Material");
@@ -1974,17 +1955,26 @@ namespace MaterialFlow.Infrastructure.Migrations
                         .HasForeignKey("SiteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_storage_locations_sites_site_id");
+                        .HasConstraintName("fk_storage_location_site_site_id");
 
                     b.Navigation("Site");
                 });
 
-            modelBuilder.Entity("MaterialFlow.Domain.Users.Permission", b =>
+            modelBuilder.Entity("MaterialFlow.Domain.Users.RolePermission", b =>
                 {
-                    b.HasOne("MaterialFlow.Domain.Users.Role", null)
-                        .WithMany("Permissions")
+                    b.HasOne("MaterialFlow.Domain.Users.Permission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_role_permission_permission_permission_id");
+
+                    b.HasOne("Role", null)
+                        .WithMany()
                         .HasForeignKey("RoleId")
-                        .HasConstraintName("fk_permission_roles_role_id");
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_role_permission_role_role_id");
                 });
 
             modelBuilder.Entity("MaterialFlow.Domain.Users.User", b =>
@@ -2003,7 +1993,7 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("users", "public");
+                            b1.ToTable("users");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId")
@@ -2024,7 +2014,7 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("users", "public");
+                            b1.ToTable("users");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId")
@@ -2045,7 +2035,7 @@ namespace MaterialFlow.Infrastructure.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("users", "public");
+                            b1.ToTable("users");
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId")
@@ -2064,12 +2054,12 @@ namespace MaterialFlow.Infrastructure.Migrations
 
             modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.HasOne("MaterialFlow.Domain.Users.Role", null)
+                    b.HasOne("Role", null)
                         .WithMany()
                         .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_role_user_roles_roles_id");
+                        .HasConstraintName("fk_role_user_role_roles_id");
 
                     b.HasOne("MaterialFlow.Domain.Users.User", null)
                         .WithMany()
@@ -2092,11 +2082,6 @@ namespace MaterialFlow.Infrastructure.Migrations
             modelBuilder.Entity("MaterialFlow.Domain.ProductStructures.ProductStructure", b =>
                 {
                     b.Navigation("Components");
-                });
-
-            modelBuilder.Entity("MaterialFlow.Domain.Users.Role", b =>
-                {
-                    b.Navigation("Permissions");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,4 +1,5 @@
-﻿using MaterialFlow.Infrastructure.Authentication;
+﻿using MaterialFlow.Domain.Users;
+using MaterialFlow.Infrastructure.Authentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.DependencyInjection;
 using System.IdentityModel.Tokens.Jwt;

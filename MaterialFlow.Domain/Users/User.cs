@@ -41,8 +41,6 @@ public sealed class User : Entity
             IdentityId = string.Empty
         };
 
-        user._roles.Add(Role.Viewer);
-
         user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
 
         return user;

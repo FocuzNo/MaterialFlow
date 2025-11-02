@@ -1,4 +1,4 @@
-﻿using MaterialFlow.Domain.Users;
+﻿namespace MaterialFlow.Domain.Users;
 
 public sealed class Role
 {
@@ -12,9 +12,9 @@ public sealed class Role
         Name = name;
     }
 
-    public static readonly Role Administrator = new(1, "Administrator");
-    public static readonly Role Planner = new(2, "Planner");
-    public static readonly Role Viewer = new(3, "Viewer");
+    public static readonly Role Administrator = new(1, nameof(Administrator));
+    public static readonly Role Planner = new(2, nameof(Planner));
+    public static readonly Role Viewer = new(3, nameof(Viewer));
 
     public int Id { get; private set; }
 

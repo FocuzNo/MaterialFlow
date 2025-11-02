@@ -5,31 +5,19 @@ using MaterialFlow.Domain.Users.ValueObjects;
 
 namespace MaterialFlow.Application.Users.Commands.Register;
 
-internal sealed class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand, Guid>
+internal sealed class RegisterUserCommandHandler(
+    IAuthenticationService authenticationService,
+    IUserRepository userRepository,
+    IUnitOfWork unitOfWork)
+    : ICommandHandler<RegisterUserCommand, Guid>
 {
-    private readonly IAuthenticationService _authenticationService;
-    private readonly IUserRepository _userRepository;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public RegisterUserCommandHandler(
-        IAuthenticationService authenticationService,
-        IUserRepository userRepository,
-        IUnitOfWork unitOfWork)
-    {
-        _authenticationService = authenticationService;
-        _userRepository = userRepository;
-        _unitOfWork = unitOfWork;
-    }
-
-    public async Task<Result<Guid>> Handle(
-        RegisterUserCommand request,
-        CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var email = new Email(request.Email);
 
-        if (!await _userRepository.IsUniqueAsync(
-            email.Value,
-            cancellationToken))
+        var isUnique = await userRepository.IsUniqueAsync(email.Value, cancellationToken);
+
+        if (!isUnique)
         {
             return Result.Failure<Guid>(UserErrors.AlreadyExists);
         }
@@ -41,16 +29,16 @@ internal sealed class RegisterUserCommandHandler : ICommandHandler<RegisterUserC
             new LastName(request.LastName),
             string.Empty);
 
-        string identityId = await _authenticationService.RegisterAsync(
+        var identityId = await authenticationService.RegisterAsync(
             user,
             request.Password,
             cancellationToken);
 
         user.SetIdentityId(identityId);
 
-        await _userRepository.AddAsync(user, cancellationToken);
+        await userRepository.AddAsync(user, cancellationToken);
 
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
         return user.Id;
     }
