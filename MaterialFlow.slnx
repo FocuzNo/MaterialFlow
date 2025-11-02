@@ -9,7 +9,9 @@
     <Project Path="MaterialFlow.Infrastructure/MaterialFlow.Infrastructure.csproj" />
     <Project Path="MaterialFlow.Presentation/MaterialFlow.Presentation.csproj" />
   </Folder>
-  <Folder Name="/test/" />
+  <Folder Name="/test/">
+    <Project Path="test/MaterialFlow.Domain.UnitTests/MaterialFlow.Domain.UnitTests.csproj" Id="29a35a7a-c8b2-4bae-84bf-eaa2d6d56313" />
+  </Folder>
   <Project Path="docker-compose.dcproj">
     <Build />
   </Project>

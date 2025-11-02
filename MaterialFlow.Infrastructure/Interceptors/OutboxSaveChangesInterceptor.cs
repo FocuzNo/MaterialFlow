@@ -1,6 +1,5 @@
 ﻿using MaterialFlow.Domain.Abstractions;
 using MaterialFlow.Infrastructure.Outbox;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System.Text.Json;
 
