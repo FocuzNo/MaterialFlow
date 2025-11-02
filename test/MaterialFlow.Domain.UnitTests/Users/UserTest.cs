@@ -77,7 +77,7 @@ public sealed class UserTests : BaseTest
             new LastName("Smith"));
 
         var domainEvent = AssertDomainEventWasPublished<UserUpdatedDomainEvent>(user);
-        
+
         domainEvent.UserId.Should().Be(user.Id);
     }
 
