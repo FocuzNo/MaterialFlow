@@ -7,14 +7,35 @@ internal static class ClaimsPrincipalExtensions
 {
     public static Guid GetUserId(this ClaimsPrincipal? principal)
     {
-        var userId = principal?.FindFirstValue(JwtRegisteredClaimNames.Sub);
+        if (principal is null || principal.Identity?.IsAuthenticated != true)
+        {
+            throw new ApplicationException("User is not authenticated");
+        }
 
-        return Guid.TryParse(userId, out var id)
-            ? id
-            : throw new ApplicationException("User id is unavailable");
+        var userId = principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+        return Guid.TryParse(userId, out var parsedId)
+            ? parsedId
+            : throw new ApplicationException("User ID (sub) is unavailable or invalid");
     }
 
-    public static string GetIdentityId(this ClaimsPrincipal? principal) =>
-        principal?.FindFirstValue(ClaimTypes.NameIdentifier)
-        ?? throw new ApplicationException("User identity is unavailable");
+    public static string GetIdentityId(this ClaimsPrincipal? principal)
+    {
+        if (principal is null || principal.Identity?.IsAuthenticated != true)
+        {
+            throw new ApplicationException("User is not authenticated");
+        }
+
+        var identityId =
+            principal.FindFirstValue("sub")
+            ?? principal.FindFirstValue(JwtRegisteredClaimNames.Sub)
+            ?? principal.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        if (string.IsNullOrWhiteSpace(identityId))
+        {
+            throw new ApplicationException("User identity (sub) is unavailable");
+        }
+
+        return identityId;
+    }
 }

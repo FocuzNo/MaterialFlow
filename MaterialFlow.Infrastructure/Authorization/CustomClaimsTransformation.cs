@@ -1,51 +1,38 @@
-﻿using MaterialFlow.Domain.Users;
-using MaterialFlow.Infrastructure.Authentication;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection;
-using System.IdentityModel.Tokens.Jwt;
+﻿using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using System.Text.Json;
 
-namespace MaterialFlow.Infrastructure.Authorization;
-
-internal sealed class CustomClaimsTransformation(IServiceProvider serviceProvider)
-    : IClaimsTransformation
+internal sealed class CustomClaimsTransformation : IClaimsTransformation
 {
-    public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
+    public Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
     {
-        if (principal.Identity is not { IsAuthenticated: true } ||
-            principal.HasClaim(claim => claim.Type == ClaimTypes.Role) &&
-            principal.HasClaim(claim => claim.Type == JwtRegisteredClaimNames.Sub))
+        if (principal.Identity is not { IsAuthenticated: true })
+            return Task.FromResult(principal);
+
+        if (principal.HasClaim(c => c.Type == ClaimTypes.Role))
+            return Task.FromResult(principal);
+
+        var resourceAccess = principal.FindFirst("resource_access")?.Value;
+
+        if (!string.IsNullOrEmpty(resourceAccess))
         {
-            return principal;
+            using var doc = JsonDocument.Parse(resourceAccess);
+            if (doc.RootElement.TryGetProperty("materialflow-api", out var api) &&
+                api.TryGetProperty("roles", out var roles) &&
+                roles.ValueKind == JsonValueKind.Array)
+            {
+                var id = new ClaimsIdentity();
+                foreach (var r in roles.EnumerateArray())
+                {
+                    var name = r.GetString();
+                    if (!string.IsNullOrWhiteSpace(name))
+                        id.AddClaim(new Claim(ClaimTypes.Role, name));
+                }
+                if (id.Claims.Any())
+                    principal.AddIdentity(id);
+            }
         }
 
-        using IServiceScope scope = serviceProvider.CreateScope();
-
-        var authorizationService = scope
-            .ServiceProvider
-            .GetRequiredService<AuthorizationService>();
-
-        string identityId = principal.GetIdentityId();
-
-        UserRolesResponse userRoles = await authorizationService.GetRolesForUserAsync(identityId);
-
-        var claimsIdentity = new ClaimsIdentity();
-
-        claimsIdentity
-            .AddClaim(new Claim(
-                JwtRegisteredClaimNames.Sub,
-                userRoles.UserId.ToString()));
-
-        foreach (Role role in userRoles.Roles)
-        {
-            claimsIdentity
-                .AddClaim(new Claim(
-                    ClaimTypes.Role,
-                    role.Name));
-        }
-
-        principal.AddIdentity(claimsIdentity);
-
-        return principal;
+        return Task.FromResult(principal);
     }
 }

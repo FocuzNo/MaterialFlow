@@ -1,13 +1,18 @@
-﻿using MaterialFlow.Infrastructure.Authentication;
-using MaterialFlow.Infrastructure.Authentication.Models;
+﻿using MaterialFlow.Infrastructure.Authentication.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
+namespace MaterialFlow.Infrastructure.Authentication;
+
 internal sealed class AdminAuthorizationDelegatingHandler(
     IHttpClientFactory httpClientFactory,
-    KeycloakOptions keycloakOptions) : DelegatingHandler
+    IOptions<KeycloakOptions> options) : DelegatingHandler
 {
+    private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    private readonly KeycloakOptions _options = options.Value;
+
     protected override async Task<HttpResponseMessage> SendAsync(
         HttpRequestMessage request,
         CancellationToken cancellationToken)
@@ -27,17 +32,17 @@ internal sealed class AdminAuthorizationDelegatingHandler(
     {
         using var tokenRequest = new HttpRequestMessage(
             HttpMethod.Post,
-            keycloakOptions.TokenUrl)
+            _options.TokenUrl)
         {
             Content = new FormUrlEncodedContent(
             [
-                new KeyValuePair<string, string>("client_id", keycloakOptions.AdminClientId),
-                new KeyValuePair<string, string>("client_secret", keycloakOptions.AdminClientSecret),
+                new KeyValuePair<string, string>("client_id", _options.AdminClientId),
+                new KeyValuePair<string, string>("client_secret", _options.AdminClientSecret),
                 new KeyValuePair<string, string>("grant_type", "client_credentials")
             ])
         };
 
-        var httpClient = httpClientFactory.CreateClient("keycloak");
+        var httpClient = _httpClientFactory.CreateClient("keycloak");
 
         using var response = await httpClient.SendAsync(
             tokenRequest,
@@ -55,7 +60,7 @@ internal sealed class AdminAuthorizationDelegatingHandler(
         if (token is null
             || string.IsNullOrWhiteSpace(token.AccessToken))
         {
-            throw new ApplicationException("Keycloak token response is empty or invalid.");
+            throw new InvalidOperationException("Keycloak token response is empty or invalid.");
         }
 
         return token.AccessToken;

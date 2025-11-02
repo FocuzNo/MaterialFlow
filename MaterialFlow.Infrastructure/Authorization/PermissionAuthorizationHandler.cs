@@ -18,11 +18,13 @@ internal sealed class PermissionAuthorizationHandler(IServiceProvider servicePro
 
         using var scope = serviceProvider.CreateScope();
 
-        var authorizationService = scope.ServiceProvider.GetRequiredService<AuthorizationService>();
+        var authorizationService = scope.ServiceProvider
+            .GetRequiredService<AuthorizationService>();
 
         var identityId = context.User.GetIdentityId();
 
-        var permissions = await authorizationService.GetPermissionsForUserAsync(identityId);
+        var permissions = await authorizationService
+            .GetPermissionsForUserAsync(identityId);
 
         if (permissions.Contains(requirement.Permission))
         {
