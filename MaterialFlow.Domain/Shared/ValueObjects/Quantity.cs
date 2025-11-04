@@ -4,7 +4,9 @@ public sealed class Quantity
 {
     private Quantity() { }
 
-    public Quantity(decimal amount, UnitOfMeasure unitOfMeasure)
+    public Quantity(
+        decimal amount,
+        UnitOfMeasure unitOfMeasure)
     {
         Amount = amount;
         UnitOfMeasure = unitOfMeasure;
