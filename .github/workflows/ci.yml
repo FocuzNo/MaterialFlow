@@ -19,13 +19,15 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
     
-    - name: Setup .NET 9
+    - name: Setup .NET 10 Preview
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '9.0.x'
+        dotnet-version: '10.0.x'
+        dotnet-quality: 'preview'
+    
+    - name: Verify .NET version
+      run: dotnet --version
     
     - name: Cache NuGet packages
       uses: actions/cache@v4
@@ -40,10 +42,8 @@ jobs:
       run: |
         SLN_FILE=$(find . -maxdepth 2 -name "*.sln" -type f | head -n 1)
         if [ -z "$SLN_FILE" ]; then
-          echo "No solution file found"
           echo "has_sln=false" >> $GITHUB_OUTPUT
         else
-          echo "Found solution: $SLN_FILE"
           echo "has_sln=true" >> $GITHUB_OUTPUT
           echo "sln_path=$SLN_FILE" >> $GITHUB_OUTPUT
         fi
@@ -52,19 +52,9 @@ jobs:
       if: steps.find-sln.outputs.has_sln == 'true'
       run: dotnet restore ${{ steps.find-sln.outputs.sln_path }}
     
-    - name: Restore (no solution)
-      if: steps.find-sln.outputs.has_sln == 'false'
-      run: |
-        find . -name "*.csproj" -exec dotnet restore {} \;
-    
     - name: Build
       if: steps.find-sln.outputs.has_sln == 'true'
       run: dotnet build ${{ steps.find-sln.outputs.sln_path }} --configuration Release --no-restore
-    
-    - name: Build (no solution)
-      if: steps.find-sln.outputs.has_sln == 'false'
-      run: |
-        find . -name "*.csproj" -exec dotnet build {} --configuration Release --no-restore \;
     
     - name: Run all tests
       run: |
@@ -76,19 +66,6 @@ jobs:
         fi
         
         for project in $TEST_PROJECTS; do
-          echo "Running tests for: $project"
-          dotnet test "$project" \
-            --configuration Release \
-            --no-build \
-            --verbosity normal \
-            --logger "trx" \
-            --results-directory ./TestResults
+          echo "Testing: $project"
+          dotnet test "$project" --configuration Release --no-build --verbosity normal
         done
-    
-    - name: Upload test results
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-results
-        path: TestResults/**/*.trx
-        retention-days: 7
