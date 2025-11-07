@@ -11,61 +11,44 @@ permissions:
   checks: write
   pull-requests: write
 
-env:
-  DOTNET_VERSION: '8.0.x'
-  CONFIGURATION: Release
-
 jobs:
-  build-and-test:
-    name: Build and Test
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+    - uses: actions/checkout@v4
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    
-    - name: Cache dependencies
-      uses: actions/cache@v4
-      with:
-        path: ~/.nuget/packages
-        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-        restore-keys: |
-          ${{ runner.os }}-nuget-
+        dotnet-version: '8.0.x'
     
     - name: Restore
       run: dotnet restore
     
     - name: Build
-      run: dotnet build --configuration ${{ env.CONFIGURATION }} --no-restore
+      run: dotnet build --configuration Release --no-restore
     
-    - name: Test - Domain
-      run: dotnet test MaterialFlow.Domain.UnitTests/MaterialFlow.Domain.UnitTests.csproj --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --logger "trx;LogFileName=domain-tests.trx" --collect:"XPlat Code Coverage"
+    - name: Run Domain Tests
+      run: dotnet test MaterialFlow.Domain.UnitTests/MaterialFlow.Domain.UnitTests.csproj --configuration Release --no-build --verbosity normal --logger "trx" --results-directory TestResults
     
-    - name: Test - Application
-      run: dotnet test MaterialFlow.Application.UnitTests/MaterialFlow.Application.UnitTests.csproj --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --logger "trx;LogFileName=application-tests.trx" --collect:"XPlat Code Coverage"
+    - name: Run Application Tests
+      run: dotnet test MaterialFlow.Application.UnitTests/MaterialFlow.Application.UnitTests.csproj --configuration Release --no-build --verbosity normal --logger "trx" --results-directory TestResults
     
-    - name: Test - Architecture
-      run: dotnet test MaterialFlow.ArchitectureTests/MaterialFlow.ArchitectureTests.csproj --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --logger "trx;LogFileName=architecture-tests.trx"
+    - name: Run Architecture Tests
+      run: dotnet test MaterialFlow.ArchitectureTests/MaterialFlow.ArchitectureTests.csproj --configuration Release --no-build --verbosity normal --logger "trx" --results-directory TestResults
     
     - name: Publish Test Results
       uses: EnricoMi/publish-unit-test-result-action@v2
       if: always()
       with:
-        files: |
-          **/TestResults/*.trx
+        files: 'TestResults/**/*.trx'
         check_name: 'Test Results'
-        github_token: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Upload Test Results
+    - name: Upload Test Results as Artifact
       uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-results
-        path: '**/TestResults/*.trx'
+        path: TestResults/
