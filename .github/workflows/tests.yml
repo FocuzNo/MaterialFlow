@@ -1,0 +1,50 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Run tests
+      run: |
+        echo "Finding and running all test projects..."
+        
+        TEST_PROJECTS=$(find . -name "*Tests.csproj" -o -name "*Test.csproj")
+        
+        if [ -z "$TEST_PROJECTS" ]; then
+          echo "❌ No test projects found!"
+          exit 1
+        fi
+        
+        echo "✅ Found test projects:"
+        echo "$TEST_PROJECTS"
+        echo ""
+        
+        for project in $TEST_PROJECTS; do
+          echo "🧪 Testing: $(basename $project)"
+          dotnet test "$project" --configuration Release --verbosity minimal
+          
+          if [ $? -eq 0 ]; then
+            echo "✅ $(basename $project) passed"
+          else
+            echo "❌ $(basename $project) failed"
+            exit 1
+          fi
+          echo ""
+        done
+        
+        echo "🎉 All tests passed!"
