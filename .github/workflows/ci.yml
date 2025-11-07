@@ -8,8 +8,6 @@ on:
 
 permissions:
   contents: read
-  checks: write
-  pull-requests: write
 
 jobs:
   test:
@@ -19,24 +17,28 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
-    - name: List files for debugging
-      run: |
-        echo "Root directory contents:"
-        ls -la
-        echo ""
-        echo "Solution files:"
-        find . -name "*.sln"
-    
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
     
     - name: Restore
-      run: dotnet restore *.sln
+      run: |
+        dotnet restore MaterialFlow.Domain.UnitTests/MaterialFlow.Domain.UnitTests.csproj
+        dotnet restore MaterialFlow.Application.UnitTests/MaterialFlow.Application.UnitTests.csproj
+        dotnet restore MaterialFlow.ArchitectureTests/MaterialFlow.ArchitectureTests.csproj
     
     - name: Build
-      run: dotnet build *.sln --configuration Release --no-restore
+      run: |
+        dotnet build MaterialFlow.Domain.UnitTests/MaterialFlow.Domain.UnitTests.csproj --configuration Release --no-restore
+        dotnet build MaterialFlow.Application.UnitTests/MaterialFlow.Application.UnitTests.csproj --configuration Release --no-restore
+        dotnet build MaterialFlow.ArchitectureTests/MaterialFlow.ArchitectureTests.csproj --configuration Release --no-restore
     
-    - name: Test
-      run: dotnet test *.sln --configuration Release --no-build --verbosity normal
+    - name: Test Domain
+      run: dotnet test MaterialFlow.Domain.UnitTests/MaterialFlow.Domain.UnitTests.csproj --configuration Release --no-build --verbosity normal
+    
+    - name: Test Application
+      run: dotnet test MaterialFlow.Application.UnitTests/MaterialFlow.Application.UnitTests.csproj --configuration Release --no-build --verbosity normal
+    
+    - name: Test Architecture
+      run: dotnet test MaterialFlow.ArchitectureTests/MaterialFlow.ArchitectureTests.csproj --configuration Release --no-build --verbosity normal
