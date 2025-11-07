@@ -22,10 +22,10 @@ jobs:
       with:
         fetch-depth: 0
     
-    - name: Setup .NET
+    - name: Setup .NET 9
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: '9.0.x'
     
     - name: Cache NuGet packages
       uses: actions/cache@v4
@@ -40,7 +40,7 @@ jobs:
       run: |
         SLN_FILE=$(find . -maxdepth 2 -name "*.sln" -type f | head -n 1)
         if [ -z "$SLN_FILE" ]; then
-          echo "No solution file found, will use individual projects"
+          echo "No solution file found"
           echo "has_sln=false" >> $GITHUB_OUTPUT
         else
           echo "Found solution: $SLN_FILE"
@@ -48,20 +48,20 @@ jobs:
           echo "sln_path=$SLN_FILE" >> $GITHUB_OUTPUT
         fi
     
-    - name: Restore (with solution)
+    - name: Restore
       if: steps.find-sln.outputs.has_sln == 'true'
       run: dotnet restore ${{ steps.find-sln.outputs.sln_path }}
     
-    - name: Restore (without solution)
+    - name: Restore (no solution)
       if: steps.find-sln.outputs.has_sln == 'false'
       run: |
         find . -name "*.csproj" -exec dotnet restore {} \;
     
-    - name: Build (with solution)
+    - name: Build
       if: steps.find-sln.outputs.has_sln == 'true'
       run: dotnet build ${{ steps.find-sln.outputs.sln_path }} --configuration Release --no-restore
     
-    - name: Build (without solution)
+    - name: Build (no solution)
       if: steps.find-sln.outputs.has_sln == 'false'
       run: |
         find . -name "*.csproj" -exec dotnet build {} --configuration Release --no-restore \;
@@ -75,18 +75,14 @@ jobs:
           exit 0
         fi
         
-        echo "Found test projects:"
-        echo "$TEST_PROJECTS"
-        
         for project in $TEST_PROJECTS; do
           echo "Running tests for: $project"
           dotnet test "$project" \
             --configuration Release \
             --no-build \
             --verbosity normal \
-            --logger "trx;LogFileName=$(basename $project .csproj).trx" \
-            --results-directory ./TestResults \
-            --collect:"XPlat Code Coverage"
+            --logger "trx" \
+            --results-directory ./TestResults
         done
     
     - name: Upload test results
@@ -96,17 +92,3 @@ jobs:
         name: test-results
         path: TestResults/**/*.trx
         retention-days: 7
-    
-    - name: Upload coverage reports
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: coverage-reports
-        path: TestResults/**/coverage.cobertura.xml
-        retention-days: 7
-    
-    - name: Test Summary
-      uses: test-summary/action@v2
-      if: always()
-      with:
-        paths: TestResults/**/*.trx
