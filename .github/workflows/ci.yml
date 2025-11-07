@@ -13,11 +13,19 @@ permissions:
 
 jobs:
   test:
-    name: Run Tests
+    name: Build and Test
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v4
+    
+    - name: List files for debugging
+      run: |
+        echo "Root directory contents:"
+        ls -la
+        echo ""
+        echo "Solution files:"
+        find . -name "*.sln"
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -25,30 +33,10 @@ jobs:
         dotnet-version: '8.0.x'
     
     - name: Restore
-      run: dotnet restore
+      run: dotnet restore *.sln
     
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build *.sln --configuration Release --no-restore
     
-    - name: Run Domain Tests
-      run: dotnet test MaterialFlow.Domain.UnitTests/MaterialFlow.Domain.UnitTests.csproj --configuration Release --no-build --verbosity normal --logger "trx" --results-directory TestResults
-    
-    - name: Run Application Tests
-      run: dotnet test MaterialFlow.Application.UnitTests/MaterialFlow.Application.UnitTests.csproj --configuration Release --no-build --verbosity normal --logger "trx" --results-directory TestResults
-    
-    - name: Run Architecture Tests
-      run: dotnet test MaterialFlow.ArchitectureTests/MaterialFlow.ArchitectureTests.csproj --configuration Release --no-build --verbosity normal --logger "trx" --results-directory TestResults
-    
-    - name: Publish Test Results
-      uses: EnricoMi/publish-unit-test-result-action@v2
-      if: always()
-      with:
-        files: 'TestResults/**/*.trx'
-        check_name: 'Test Results'
-    
-    - name: Upload Test Results as Artifact
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: test-results
-        path: TestResults/
+    - name: Test
+      run: dotnet test *.sln --configuration Release --no-build --verbosity normal
