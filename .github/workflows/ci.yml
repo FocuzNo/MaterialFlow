@@ -8,37 +8,105 @@ on:
 
 permissions:
   contents: read
+  checks: write
+  pull-requests: write
 
 jobs:
-  test:
+  build-and-test:
     name: Build and Test
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
     
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
     
-    - name: Restore
+    - name: Cache NuGet packages
+      uses: actions/cache@v4
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+    
+    - name: Find solution file
+      id: find-sln
       run: |
-        dotnet restore MaterialFlow.Domain.UnitTests/MaterialFlow.Domain.UnitTests.csproj
-        dotnet restore MaterialFlow.Application.UnitTests/MaterialFlow.Application.UnitTests.csproj
-        dotnet restore MaterialFlow.ArchitectureTests/MaterialFlow.ArchitectureTests.csproj
+        SLN_FILE=$(find . -maxdepth 2 -name "*.sln" -type f | head -n 1)
+        if [ -z "$SLN_FILE" ]; then
+          echo "No solution file found, will use individual projects"
+          echo "has_sln=false" >> $GITHUB_OUTPUT
+        else
+          echo "Found solution: $SLN_FILE"
+          echo "has_sln=true" >> $GITHUB_OUTPUT
+          echo "sln_path=$SLN_FILE" >> $GITHUB_OUTPUT
+        fi
     
-    - name: Build
+    - name: Restore (with solution)
+      if: steps.find-sln.outputs.has_sln == 'true'
+      run: dotnet restore ${{ steps.find-sln.outputs.sln_path }}
+    
+    - name: Restore (without solution)
+      if: steps.find-sln.outputs.has_sln == 'false'
       run: |
-        dotnet build MaterialFlow.Domain.UnitTests/MaterialFlow.Domain.UnitTests.csproj --configuration Release --no-restore
-        dotnet build MaterialFlow.Application.UnitTests/MaterialFlow.Application.UnitTests.csproj --configuration Release --no-restore
-        dotnet build MaterialFlow.ArchitectureTests/MaterialFlow.ArchitectureTests.csproj --configuration Release --no-restore
+        find . -name "*.csproj" -exec dotnet restore {} \;
     
-    - name: Test Domain
-      run: dotnet test MaterialFlow.Domain.UnitTests/MaterialFlow.Domain.UnitTests.csproj --configuration Release --no-build --verbosity normal
+    - name: Build (with solution)
+      if: steps.find-sln.outputs.has_sln == 'true'
+      run: dotnet build ${{ steps.find-sln.outputs.sln_path }} --configuration Release --no-restore
     
-    - name: Test Application
-      run: dotnet test MaterialFlow.Application.UnitTests/MaterialFlow.Application.UnitTests.csproj --configuration Release --no-build --verbosity normal
+    - name: Build (without solution)
+      if: steps.find-sln.outputs.has_sln == 'false'
+      run: |
+        find . -name "*.csproj" -exec dotnet build {} --configuration Release --no-restore \;
     
-    - name: Test Architecture
-      run: dotnet test MaterialFlow.ArchitectureTests/MaterialFlow.ArchitectureTests.csproj --configuration Release --no-build --verbosity normal
+    - name: Run all tests
+      run: |
+        TEST_PROJECTS=$(find . -name "*Tests.csproj" -o -name "*Test.csproj")
+        
+        if [ -z "$TEST_PROJECTS" ]; then
+          echo "No test projects found"
+          exit 0
+        fi
+        
+        echo "Found test projects:"
+        echo "$TEST_PROJECTS"
+        
+        for project in $TEST_PROJECTS; do
+          echo "Running tests for: $project"
+          dotnet test "$project" \
+            --configuration Release \
+            --no-build \
+            --verbosity normal \
+            --logger "trx;LogFileName=$(basename $project .csproj).trx" \
+            --results-directory ./TestResults \
+            --collect:"XPlat Code Coverage"
+        done
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: TestResults/**/*.trx
+        retention-days: 7
+    
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-reports
+        path: TestResults/**/coverage.cobertura.xml
+        retention-days: 7
+    
+    - name: Test Summary
+      uses: test-summary/action@v2
+      if: always()
+      with:
+        paths: TestResults/**/*.trx
