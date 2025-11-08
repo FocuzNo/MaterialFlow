@@ -417,3 +417,4 @@ h2/
 *.db-shm
 *.db-wal
 
+.containers/
