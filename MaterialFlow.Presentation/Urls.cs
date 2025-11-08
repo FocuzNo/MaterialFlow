@@ -17,5 +17,6 @@ internal static class Urls
     internal const string PurchaseRequests = "/purchase-requests";
     internal const string SalesOrderDemands = "/sales-order-demands";
     internal const string Sites = "/sites";
+    internal const string StorageLocations = "/storage-locations";
     internal const string Users = "/users";
 }

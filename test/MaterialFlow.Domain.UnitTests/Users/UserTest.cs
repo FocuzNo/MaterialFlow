@@ -1,5 +1,4 @@
-﻿using MaterialFlow.Domain.UnitTests.Infrastructure;
-using MaterialFlow.Domain.Users;
+﻿using MaterialFlow.Domain.Users;
 using MaterialFlow.Domain.Users.Events;
 using MaterialFlow.Domain.Users.ValueObjects;
 

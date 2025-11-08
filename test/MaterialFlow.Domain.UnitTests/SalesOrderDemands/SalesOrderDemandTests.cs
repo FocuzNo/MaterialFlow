@@ -2,7 +2,6 @@
 using MaterialFlow.Domain.SalesOrderDemands.Events;
 using MaterialFlow.Domain.SalesOrderDemands.ValueObjects;
 using MaterialFlow.Domain.Shared.ValueObjects;
-using MaterialFlow.Domain.UnitTests.Infrastructure;
 
 namespace MaterialFlow.Domain.UnitTests.SalesOrderDemands;
 

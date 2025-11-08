@@ -3,7 +3,6 @@ using MaterialFlow.Domain.Materials.Enums;
 using MaterialFlow.Domain.Materials.Events;
 using MaterialFlow.Domain.Materials.ValueObjects;
 using MaterialFlow.Domain.Shared.ValueObjects;
-using MaterialFlow.Domain.UnitTests.Infrastructure;
 
 namespace MaterialFlow.Domain.UnitTests.Materials;
 

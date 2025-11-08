@@ -1,6 +1,5 @@
 ﻿using MaterialFlow.Domain.ComponentReservations;
 using MaterialFlow.Domain.Shared.ValueObjects;
-using MaterialFlow.Domain.UnitTests.Infrastructure;
 
 namespace MaterialFlow.Domain.UnitTests.ComponentReservations;
 

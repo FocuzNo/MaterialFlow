@@ -1,4 +1,6 @@
-﻿namespace MaterialFlow.Domain.Sites;
+﻿using MaterialFlow.Domain.Sites;
+
+namespace MaterialFlow.Domain.StorageLocations;
 
 public sealed class StorageLocation : Entity
 {

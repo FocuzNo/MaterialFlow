@@ -1,7 +1,6 @@
 ﻿using MaterialFlow.Domain.PlannedProductionOrders;
 using MaterialFlow.Domain.PlannedProductionOrders.Events;
 using MaterialFlow.Domain.Shared.ValueObjects;
-using MaterialFlow.Domain.UnitTests.Infrastructure;
 
 namespace MaterialFlow.Domain.UnitTests.PlannedProductionOrders;
 

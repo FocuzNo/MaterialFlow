@@ -1,7 +1,6 @@
 ﻿using MaterialFlow.Domain.ForecastPlanItems;
 using MaterialFlow.Domain.ForecastPlanItems.Events;
 using MaterialFlow.Domain.Shared.ValueObjects;
-using MaterialFlow.Domain.UnitTests.Infrastructure;
 
 namespace MaterialFlow.Domain.UnitTests.ForecastPlanItems;
 
