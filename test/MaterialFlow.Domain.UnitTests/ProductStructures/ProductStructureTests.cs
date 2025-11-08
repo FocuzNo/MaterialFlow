@@ -1,7 +1,6 @@
 ﻿using MaterialFlow.Domain.Materials.Enums;
 using MaterialFlow.Domain.ProductStructures;
 using MaterialFlow.Domain.Shared.ValueObjects;
-using MaterialFlow.Domain.UnitTests.Infrastructure;
 
 namespace MaterialFlow.Domain.UnitTests.ProductStructures;
 

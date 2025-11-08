@@ -1,6 +1,5 @@
 ﻿using MaterialFlow.Domain.PlanningRuns;
 using MaterialFlow.Domain.Shared.ValueObjects;
-using MaterialFlow.Domain.UnitTests.Infrastructure;
 using MaterialFlow.Domain.UnitTests.PlanningRunLines;
 
 namespace MaterialFlow.Domain.UnitTests.PlanningRuns;

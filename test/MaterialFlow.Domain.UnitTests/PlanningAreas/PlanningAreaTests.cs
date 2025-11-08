@@ -1,5 +1,4 @@
 ﻿using MaterialFlow.Domain.PlanningAreas;
-using MaterialFlow.Domain.UnitTests.Infrastructure;
 
 namespace MaterialFlow.Domain.UnitTests.PlanningAreas;
 

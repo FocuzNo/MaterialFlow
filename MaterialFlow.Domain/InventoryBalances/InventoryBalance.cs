@@ -1,6 +1,7 @@
 ﻿using MaterialFlow.Domain.Materials;
 using MaterialFlow.Domain.Shared.ValueObjects;
 using MaterialFlow.Domain.Sites;
+using MaterialFlow.Domain.StorageLocations;
 
 namespace MaterialFlow.Domain.InventoryBalances;
 

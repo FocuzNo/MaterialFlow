@@ -1,6 +1,5 @@
 ﻿using MaterialFlow.Domain.InventoryBalances;
 using MaterialFlow.Domain.Shared.ValueObjects;
-using MaterialFlow.Domain.UnitTests.Infrastructure;
 
 namespace MaterialFlow.Domain.UnitTests.InventoryBalances;
 

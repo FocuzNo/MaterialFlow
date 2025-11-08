@@ -16,6 +16,7 @@ using MaterialFlow.Domain.PurchaseRequests;
 using MaterialFlow.Domain.SalesOrderDemands;
 using MaterialFlow.Domain.Sites;
 using MaterialFlow.Infrastructure.Outbox;
+using MaterialFlow.Domain.StorageLocations;
 
 namespace MaterialFlow.Infrastructure;
 
