@@ -362,3 +362,58 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 .containers/identity/h2/
+
+# Ignore realm exports with secrets
+*-realm-export.json
+*-realm-backup.json
+
+# Ignore local overrides
+*-realm.local.json
+docker-compose.override.yml
+
+# Ignore Keycloak data
+data/
+h2/
+
+# ===================================
+# Identity/Keycloak
+# ===================================
+
+# Environment files
+.containers/**/.env
+.containers/**/.env.local
+
+# Keycloak exports and backups (могут содержать секреты)
+.containers/identity/export/
+.containers/identity/*-export.json
+.containers/identity/*-backup.json
+
+# Keycloak data
+.containers/identity/data/
+.containers/identity/h2/
+.containers/identity/standalone/
+.containers/identity/logs/
+
+# Keep import configuration
+!.containers/identity/import/
+!.containers/identity/import/realm.json
+
+# ===================================
+# Secrets & Configuration
+# ===================================
+
+# Application secrets
+**/appsettings.Secrets.json
+**/appsettings.*.Local.json
+
+# Certificates
+*.pfx
+*.p12
+*.key
+*.pem
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+

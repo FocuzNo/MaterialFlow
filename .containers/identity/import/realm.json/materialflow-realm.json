@@ -1,0 +1,95 @@
+{
+  "realm": "materialflow",
+  "enabled": true,
+  "sslRequired": "none",
+  "attributes": { "frontendUrl": "" },
+  "roles": {
+    "client": {
+      "materialflow-api": [
+        { "name": "Administrator" },
+        { "name": "Planner" },
+        { "name": "Viewer" }
+      ]
+    }
+  },
+  "clientScopes": [
+    {
+      "name": "audience-materialflow-api",
+      "protocol": "openid-connect",
+      "attributes": { "include.in.token.scope": "true" },
+      "protocolMappers": [
+        {
+          "name": "audience-materialflow-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.client.audience": "materialflow-api",
+            "access.token.claim": "true",
+            "id.token.claim": "true",
+            "userinfo.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "materialflow-api",
+      "protocol": "openid-connect",
+      "bearerOnly": true,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": true,
+      "defaultClientScopes": [
+        "roles", "web-origins", "profile", "email", "audience-materialflow-api"
+      ]
+    },
+    {
+      "clientId": "materialflow-admin-client",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "EvDt1VZps3I1iJuDwlHkcgC03gl5wjEx",
+      "clientAuthenticatorType": "client-secret",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": true,
+      "fullScopeAllowed": true,
+      "defaultClientScopes": [
+        "roles", "web-origins", "profile", "email", "audience-materialflow-api"
+      ],
+      "optionalClientScopes": [ "address", "phone" ]
+    },
+    {
+      "clientId": "materialflow-auth-client",
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "OKhSqaFWlZAxBQMM85Zt8CgGwyb03BPU",
+      "clientAuthenticatorType": "client-secret",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "fullScopeAllowed": true,
+      "defaultClientScopes": [
+        "roles", "web-origins", "profile", "email", "audience-materialflow-api"
+      ],
+      "optionalClientScopes": [ "address", "phone" ]
+    }
+  ],
+  "users": [
+    {
+      "username": "service-account-materialflow-admin-client",
+      "enabled": true,
+      "serviceAccountClientId": "materialflow-admin-client",
+      "clientRoles": {
+        "materialflow-api": [ "Administrator", "Planner", "Viewer" ],
+        "realm-management": [ "realm-admin" ]
+      }
+    }
+  ]
+}
