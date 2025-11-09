@@ -16,6 +16,7 @@ internal sealed class Create : IEndpoint
                 id => Results.Created($"{Urls.Materials}/{id}", id),
                 ApiResults.Problem);
         })
-        .WithTags(Tags.Materials);
+        .WithTags(Tags.Materials)
+        .RequireAuthorization();
     }
 }

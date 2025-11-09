@@ -14,6 +14,7 @@ internal sealed class GetAll : IEndpoint
                 Results.Ok,
                 ApiResults.Problem);
         })
-        .WithTags(Tags.PlanningRunLines);
+        .WithTags(Tags.PlanningRunLines)
+        .RequireAuthorization();
     }
 }

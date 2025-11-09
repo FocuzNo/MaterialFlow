@@ -16,6 +16,7 @@ internal sealed class Deactivate : IEndpoint
                 Results.NoContent,
                 ApiResults.Problem);
         })
-        .WithTags(Tags.Materials);
+        .WithTags(Tags.Materials)
+        .RequireAuthorization();
     }
 }
