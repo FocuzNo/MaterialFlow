@@ -18,6 +18,7 @@ internal sealed class AddComponent : IEndpoint
                 componentId => Results.Created($"{Urls.ProductStructures}/{productStructureId}/components/{componentId}", componentId),
                 ApiResults.Problem);
         })
-        .WithTags(Tags.ProductStructures);
+        .WithTags(Tags.ProductStructures)
+        .RequireAuthorization();
     }
 }

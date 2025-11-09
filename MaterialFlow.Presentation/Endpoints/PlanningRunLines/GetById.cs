@@ -16,6 +16,7 @@ internal sealed class GetById : IEndpoint
                 Results.Ok,
                 ApiResults.Problem);
         })
-        .WithTags(Tags.PlanningRunLines);
+        .WithTags(Tags.PlanningRunLines)
+        .RequireAuthorization();
     }
 }

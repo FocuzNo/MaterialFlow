@@ -16,6 +16,7 @@ internal sealed class Delete : IEndpoint
                 Results.NoContent,
                 ApiResults.Problem);
         })
-        .WithTags(Tags.ProductComponents);
+        .WithTags(Tags.ProductComponents)
+        .RequireAuthorization();
     }
 }

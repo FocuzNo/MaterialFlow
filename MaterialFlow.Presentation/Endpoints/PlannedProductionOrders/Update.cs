@@ -16,6 +16,7 @@ internal sealed class Update : IEndpoint
                 Results.NoContent,
                 ApiResults.Problem);
         })
-        .WithTags(Tags.PlannedProductionOrders);
+        .WithTags(Tags.PlannedProductionOrders)
+        .RequireAuthorization();
     }
 }

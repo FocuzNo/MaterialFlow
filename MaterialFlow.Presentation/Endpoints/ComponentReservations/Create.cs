@@ -16,6 +16,7 @@ internal sealed class Create : IEndpoint
                 id => Results.Created($"{Urls.ComponentReservations}/{id}", id),
                 ApiResults.Problem);
         })
-        .WithTags(Tags.ComponentReservations);
+        .WithTags(Tags.ComponentReservations)
+        .RequireAuthorization();
     }
 }

@@ -16,6 +16,7 @@ internal sealed class GetById : IEndpoint
                 Results.Ok,
                 ApiResults.Problem);
         })
-        .WithTags(Tags.ProductStructures);
+        .WithTags(Tags.ProductStructures)
+        .RequireAuthorization();
     }
 }

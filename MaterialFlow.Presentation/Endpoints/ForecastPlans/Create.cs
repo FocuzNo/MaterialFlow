@@ -14,6 +14,7 @@ internal sealed class Create : IEndpoint
 
             return Results.Created($"{Urls.ForecastPlans}/{id}", id);
         })
-        .WithTags(Tags.ForecastPlans);
+        .WithTags(Tags.ForecastPlans)
+        .RequireAuthorization();
     }
 }
