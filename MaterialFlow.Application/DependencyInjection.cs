@@ -18,7 +18,7 @@ public static class DependencyInjection
             configuration.AddOpenBehavior(typeof(QueryCachingBehavior<,>));
         });
 
-        ////services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, includeInternalTypes: true);
+        services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, includeInternalTypes: true);
 
         return services;
     }
