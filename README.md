@@ -23,6 +23,7 @@ Database	PostgreSQL	5433	Primary relational data storage.
 Identity	Keycloak	18080	Identity Provider (IDP) for AuthN/AuthZ.
 Cache	Redis 7.2	6379	Distributed in-memory caching.
 Logging	Seq	8081	Centralized structured log analysis.
+
 🧪 Testing & Quality
 
     Unit Testing: Comprehensive tests for the Domain and Application layers to ensure business logic integrity.
