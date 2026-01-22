@@ -1,6 +1,7 @@
 # MaterialFlow
 
 MaterialFlow is a high-performance API template built with .NET 10 and C# 13, designed following Clean Architecture and Domain-Driven Design (DDD) principles. It provides a robust foundation for scalable enterprise applications with out-of-the-box support for Identity management, distributed caching, and structured logging.​
+
 🏗 Architecture Layers
 
 The solution is divided into four logic layers to ensure a separation of concerns:
